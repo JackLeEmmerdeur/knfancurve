@@ -1,2 +1,9 @@
-<!DOCTYPE RCC>
-<RCC version="1.0"/>
+<RCC>
+    <qresource prefix="/icons">
+        <file>cog.png</file>
+        <file>chart_curve.png</file>
+    </qresource>
+    <qresource prefix="/translations">
+        <file>nfancurvytr_de.qm</file>
+    </qresource>
+</RCC>
