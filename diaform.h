@@ -3,6 +3,14 @@
 
 #include <QWidget>
 #include <QGridLayout>
+#include <QAction>
+#include <QPainter>
+#include <QtCharts>
+#include <QWidgetAction>
+#include <QMenu>
+#include <QToolButton>
+#include <QVariant>
+#include <dia.h>
 
 namespace Ui {
 class DiaForm;
@@ -20,8 +28,11 @@ public:
 
     void addGraph();
 
-private slots:
-    void on_pushButton_clicked();
+public slots:
+    void handleAddGraphMenuChanged(QAction *action);
+
+// private slots:
+// void on_pushButton_clicked();
 
 private:
     Ui::DiaForm *ui;

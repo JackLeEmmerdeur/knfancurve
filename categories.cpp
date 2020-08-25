@@ -1,10 +1,5 @@
 #include "categories.h"
 #include "ui_categories.h"
-#include <QList>
-#include <QDebug>
-#include <QListView>
-#include <QStandardItem>
-#include <QIcon>
 
 Categories::Categories(QWidget *parent, QList<QList<QString> > *cats) :
     QWidget(parent),
@@ -21,24 +16,41 @@ Categories::Categories(QWidget *parent, QList<QList<QString> > *cats) :
 
     for (int i = 0; i < l; i++) {
         QList<QString> cat = cats->at(i);
-        // qDebug("%s/%s", cat.at(0).toStdString().c_str(), cat.at(1).toStdString().c_str());
-        model->appendRow(new QStandardItem(QIcon(cat.at(0)), cat.at(1)));
+        QStandardItem *item = new QStandardItem(QIcon(cat.at(0)), cat.at(1));
+        if (i == 0) this->firstCatlistItem = item;
+        item->setData(cat.at(2), Qt::UserRole);
+        model->appendRow(item);
     }
 
     connect(
         this->ui->categoryList->selectionModel(),
         SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
         this,
-        SLOT(handleSelectionChanged(QItemSelection))
+        SLOT(handleSelectionChanged(QItemSelection,QItemSelection))
         );
+
+    QTimer::singleShot(100, this, SLOT(timeoutDefaultListSelection()));
 }
 
-void Categories::handleSelectionChanged(const QItemSelection &selection)
+void Categories::timeoutDefaultListSelection()
 {
-    if (selection.indexes().isEmpty()) {
-        // clearMainView();
-    } else {
-        emit catIndexChanged(selection.indexes()[0].row());
+    this->ui->categoryList->selectionModel()->select(
+        this->firstCatlistItem->index(), QItemSelectionModel::Select);
+}
+
+void Categories::handleSelectionChanged(const QItemSelection &selected,
+                                        const QItemSelection &deselected)
+{
+    if (!selected.indexes().isEmpty()) {
+        QModelIndexList l1 = selected.indexes();
+        QVariant newCatId = this->ui->categoryList->model()->data(l1.first(), Qt::UserRole);
+
+        QVariant oldCatId;
+        QModelIndexList l2 = deselected.indexes();
+        if (l2.count() > 0)
+            oldCatId = this->ui->categoryList->model()->data(l2.first(), Qt::UserRole);
+
+        emit catIdChanged((oldCatId.isValid() ? oldCatId.toString() : ""), newCatId.toString());
     }
 }
 

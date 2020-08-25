@@ -1,15 +1,5 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <QPushButton>
-#include <QWidget>
-#include <QHBoxLayout>
-#include <QLayout>
-#include <QDebug>
-#include <QFrame>
-#include <QList>
-#include "categories.h"
-#include "diaform.h"
-#include "qutiehelpers.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -20,8 +10,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     QList<QList<QString> > *q = new QList<QList<QString> >();
-    q->append(QList<QString>({":/icons/cog", tr("My dude") }));
-    q->append(QList<QString>({":/icons/chart_curve", "Charts"}));
+    q->append(QList<QString>({":/icons/chart_curve", "Charts", "charts"}));
+    q->append(QList<QString>({":/icons/cog", tr("My dude"), "settings"}));
 
     this->cats = new Categories(nullptr, q);
 
@@ -35,34 +25,61 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(
         this->cats,
-        SIGNAL(catIndexChanged(int)),
+        SIGNAL(catIdChanged(QString,QString)),
         this,
-        SLOT(handleCatIndexChange(int))
+        SLOT(handleCatIndexChange(QString,QString))
         );
+
+    this->proc = new QProcess();
+    QStringList procArgs;
+    procArgs << "-L";
+    this->proc->start("nvidia-smi", procArgs);
+
+    connect(this->proc, SIGNAL(finished(int)),
+            this, SLOT(finishedReadingGPUInfo(int)));
 }
 
-void MainWindow::handleCatIndexChange(int index)
+void MainWindow::finishedReadingGPUInfo(int processReturnValue)
 {
-    if (index == 1 && this->prevCatIndex != 1) {
-        QVBoxLayout *contentLayout = static_cast<QVBoxLayout *>(this->ui->contentLayout);
-        try {
-            if (this->dia == nullptr)
-                this->dia = new DiaForm();
-            contentLayout->addWidget(dia);
-            dia->adjustSize();
-        }
-        catch (const std::exception &e) {
-            qDebug("%s", e.what());
-        }
-    } else if (index == 0) {
-        if (this->prevCatIndex == 1)
+    if (processReturnValue == 0) {
+        QByteArray a = this->proc->readAllStandardOutput();
+        qDebug() << "yo:";
+        qDebug() << a.toStdString().c_str();
+    }
+}
+
+void MainWindow::handleCatIndexChange(const QString &oldCatId, const QString &newCatId)
+{
+// qDebug("oldCatId=%s / newCatId=%s", oldCatId.toStdString().c_str(),
+// newCatId.toStdString().c_str());
+
+    bool newIsCharts = newCatId.compare("charts") == 0;
+    bool oldIsCharts = oldCatId.compare("charts") == 0;
+    bool newIsSettings = newCatId.compare("settings") == 0;
+
+// qDebug("newIsCharts=%d / oldIsCharts=%d / newIsSettings=%d", newIsCharts, oldIsCharts,
+// newIsSettings);
+
+    if (newIsCharts && !oldIsCharts) {
+        this->createDiaForm();
+    } else if (newIsSettings) {
+        if (oldIsCharts && this->dia != nullptr)
             this->dia->setParent(nullptr);
     }
-    this->prevCatIndex = index;
 }
 
 MainWindow::~MainWindow()
 {
     delete this->cats;
     delete ui;
+}
+
+void MainWindow::createDiaForm()
+{
+    QVBoxLayout *contentLayout = static_cast<QVBoxLayout *>(this->ui->contentLayout);
+
+    if (this->dia == nullptr)
+        this->dia = new DiaForm();
+    contentLayout->addWidget(dia);
+    dia->adjustSize();
 }
