@@ -12,8 +12,14 @@
 #include <QList>
 #include <QProcess>
 #include <QByteArray>
+#include <QString>
 #include <QStringList>
+#include <QSqlDatabase>
+#include <QApplication>
+#include <QTextCodec>
+
 #include "categories.h"
+#include "settingsframe.h"
 #include "diaform.h"
 #include "qutiehelpers.h"
 
@@ -32,19 +38,23 @@ public:
 private slots:
     void handleCatIndexChange(const QString &oldCatId, const QString &newCatId);
     void finishedReadingGPUInfo(int processReturnValue);
+    void quit();
 
 private:
-    int prevCatIndex;
+    QString *gpuInfo;
 
     Ui::MainWindow *ui;
 
     DiaForm *dia = nullptr;
 
-    Categories *cats;
+    Categories *cats = nullptr;
+
+    SettingsFrame *settingsFrame = nullptr;
 
     QProcess *proc;
 
     void createDiaForm();
+    void createSettingsFrame();
 };
 
 #endif // MAINWINDOW_H

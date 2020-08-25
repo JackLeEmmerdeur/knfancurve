@@ -7,8 +7,8 @@ DiaForm::DiaForm(QWidget *parent) :
 {
     ui->setupUi(this);
     QMenu *menu = new QMenu("Menu");
-    QAction *a1 = menu->addAction("GPU Fanspeed");
-    QAction *a2 = menu->addAction("GPU Temperature");
+    QAction *a1 = menu->addAction(tr("GPU Fanspeed"));
+    QAction *a2 = menu->addAction(tr("GPU Temperature"));
 
     a1->setData(0);
     a2->setData(1);

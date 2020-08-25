@@ -30,14 +30,16 @@ SOURCES += \
     categories.cpp \
     diaform.cpp \
     qutiehelpers.cpp \
-    dia.cpp
+    dia.cpp \
+    settingsframe.cpp
 
 HEADERS += \
         mainwindow.h \
     categories.h \
     diaform.h \
     qutiehelpers.h \
-    dia.h
+    dia.h \
+    settingsframe.h
 
 TRANSLATIONS = nfancurvytr_de.ts
 
@@ -47,7 +49,8 @@ FORMS += \
         mainwindow.ui \
     categories.ui \
     diaform.ui \
-    dia.ui
+    dia.ui \
+    settingsframe.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
