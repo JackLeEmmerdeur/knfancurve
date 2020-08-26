@@ -5,38 +5,37 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    const QString DRIVER("QSQLITE");
+// const QString DRIVER("QSQLITE");
 
-    if (!QSqlDatabase::isDriverAvailable(DRIVER)) {
-        QutieHelpers::msgbox(tr("Error"), tr("SQLiteDriver missing"));
-        QTimer::singleShot(1000, this, SLOT(quit()));
-    } else {
-        ui->setupUi(this);
+// if (!QSqlDatabase::isDriverAvailable(DRIVER)) {
+// QutieHelpers::msgbox(tr("Error"), tr("SQLiteDriver missing"));
+// QTimer::singleShot(1000, this, SLOT(quit()));
+// } else {
+    ui->setupUi(this);
 
-        QList<QList<QString> > *q = new QList<QList<QString> >();
-        q->append(QList<QString>({":/icons/chart_curve", "Charts", "charts"}));
-        q->append(QList<QString>({":/icons/cog", tr("My dude"), "settings"}));
+    this->nvidiaSMI = new NVidiaSMI();
 
-        this->cats = new Categories(nullptr, q);
+    QList<QList<QString> > *q = new QList<QList<QString> >();
+    q->append(QList<QString>({":/icons/chart_curve", "Charts", "charts"}));
+    q->append(QList<QString>({":/icons/cog", tr("My dude"), "settings"}));
 
-        QFrame *f = ui->categoriesFrame;
-        QHBoxLayout *l = new QHBoxLayout();
+    this->cats = new Categories(nullptr, q);
 
-        f->setLayout(l);
-        l->addWidget(this->cats);
-        l->setSpacing(0);
-        l->setContentsMargins(0, 0, 0, 0);
+    QFrame *f = ui->categoriesFrame;
+    QHBoxLayout *l = new QHBoxLayout();
 
-        connect(
-            this->cats,
-            SIGNAL(catIdChanged(QString,QString)),
-            this,
-            SLOT(handleCatIndexChange(QString,QString))
-            );
+    f->setLayout(l);
+    l->addWidget(this->cats);
+    l->setSpacing(0);
+    l->setContentsMargins(0, 0, 0, 0);
 
-        this->proc = QutieHelpers::runproc("nvidia-smi", QStringList({"-L"}));
-        connect(this->proc, SIGNAL(finished(int)), this, SLOT(finishedReadingGPUInfo(int)));
-    }
+    connect(
+        this->cats,
+        SIGNAL(catIdChanged(QString,QString)),
+        this,
+        SLOT(handleCatIndexChange(QString,QString))
+        );
+// }
 }
 
 void MainWindow::quit()
@@ -44,27 +43,12 @@ void MainWindow::quit()
     QApplication::quit();
 }
 
-void MainWindow::finishedReadingGPUInfo(int processReturnValue)
-{
-    if (processReturnValue == 0) {
-        QByteArray a = this->proc->readAllStandardOutput();
-        QString q = QTextCodec::codecForMib(106)->toUnicode(a);
-        this->gpuInfo = new QString(q.data());
-    }
-}
-
 void MainWindow::handleCatIndexChange(const QString &oldCatId, const QString &newCatId)
 {
-// qDebug("oldCatId=%s / newCatId=%s", oldCatId.toStdString().c_str(),
-// newCatId.toStdString().c_str());
-
     bool newIsCharts = newCatId.compare("charts") == 0;
     bool oldIsCharts = oldCatId.compare("charts") == 0;
     bool oldIsSettings = oldCatId.compare("settings") == 0;
     bool newIsSettings = newCatId.compare("settings") == 0;
-
-// qDebug("newIsCharts=%d / oldIsCharts=%d / newIsSettings=%d", newIsCharts, oldIsCharts,
-// newIsSettings);
 
     if (newIsCharts && !oldIsCharts) {
         this->createDiaForm();
@@ -79,6 +63,8 @@ void MainWindow::handleCatIndexChange(const QString &oldCatId, const QString &ne
 
 MainWindow::~MainWindow()
 {
+    if (this->nvidiaSMI != nullptr)
+        delete this->nvidiaSMI;
     if (this->cats != nullptr)
         delete this->cats;
     if (this->ui != nullptr)
@@ -92,7 +78,7 @@ void MainWindow::createSettingsFrame()
         this->settingsFrame = new SettingsFrame();
     contentLayout->addWidget(this->settingsFrame);
     this->settingsFrame->adjustSize();
-    this->settingsFrame->addDebugInfo(QString(this->gpuInfo->constData()));
+    this->settingsFrame->addDebugInfo(this->nvidiaSMI);
 }
 
 void MainWindow::createDiaForm()

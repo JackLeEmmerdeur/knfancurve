@@ -2,6 +2,7 @@
 #define SETTINGSFRAME_H
 
 #include <QFrame>
+#include "nvidasmi.h"
 
 namespace Ui {
 class SettingsFrame;
@@ -15,7 +16,7 @@ public:
     explicit SettingsFrame(QWidget *parent = nullptr);
     ~SettingsFrame();
 
-    void addDebugInfo(const QString &info);
+    void addDebugInfo(NVidiaSMI *smi);
 
 private:
     Ui::SettingsFrame *ui;

@@ -3,6 +3,7 @@
 #include <QtCore/QTranslator>
 #include <QtCore/QLocale>
 #include <QMessageBox>
+#include "nvidasmi.h"
 
 int main(int argc, char *argv[])
 {

@@ -17,6 +17,7 @@
 #include <QSqlDatabase>
 #include <QApplication>
 #include <QTextCodec>
+#include "nvidasmi.h";
 
 #include "categories.h"
 #include "settingsframe.h"
@@ -37,11 +38,9 @@ public:
 
 private slots:
     void handleCatIndexChange(const QString &oldCatId, const QString &newCatId);
-    void finishedReadingGPUInfo(int processReturnValue);
     void quit();
 
 private:
-    QString *gpuInfo;
 
     Ui::MainWindow *ui;
 
@@ -51,9 +50,10 @@ private:
 
     SettingsFrame *settingsFrame = nullptr;
 
-    QProcess *proc;
+    NVidiaSMI *nvidiaSMI = nullptr;
 
     void createDiaForm();
+
     void createSettingsFrame();
 };
 

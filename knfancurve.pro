@@ -31,7 +31,9 @@ SOURCES += \
     diaform.cpp \
     qutiehelpers.cpp \
     dia.cpp \
-    settingsframe.cpp
+    settingsframe.cpp \
+    nvidasmi.cpp \
+    mischelpers.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -39,7 +41,9 @@ HEADERS += \
     diaform.h \
     qutiehelpers.h \
     dia.h \
-    settingsframe.h
+    settingsframe.h \
+    nvidasmi.h \
+    mischelpers.h
 
 TRANSLATIONS = nfancurvytr_de.ts
 

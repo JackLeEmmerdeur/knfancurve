@@ -13,7 +13,7 @@ SettingsFrame::~SettingsFrame()
     delete ui;
 }
 
-void SettingsFrame::addDebugInfo(const QString &info)
+void SettingsFrame::addDebugInfo(NVidiaSMI *smi)
 {
-    this->ui->textEdit->setText(info);
+    this->ui->textEdit->setText(smi->gpu(0)->id);
 }
