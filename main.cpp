@@ -3,7 +3,7 @@
 #include <QtCore/QTranslator>
 #include <QtCore/QLocale>
 #include <QMessageBox>
-#include "nvidasmi.h"
+#include "nvidiasmi.h"
 
 int main(int argc, char *argv[])
 {

@@ -5,6 +5,7 @@ SettingsFrame::SettingsFrame(QWidget *parent) :
     QFrame(parent),
     ui(new Ui::SettingsFrame)
 {
+    this->addedGPUInfo = false;
     ui->setupUi(this);
 }
 
@@ -13,7 +14,14 @@ SettingsFrame::~SettingsFrame()
     delete ui;
 }
 
-void SettingsFrame::addDebugInfo(NVidiaSMI *smi)
+void SettingsFrame::addGPUInfo(NVidiaSMI *smi)
 {
-    this->ui->textEdit->setText(smi->gpu(0)->id);
+    if (this->addedGPUInfo == false && smi->gpuCount() > 0) {
+        QListView *v = this->ui->gpuListView;
+        QStandardItemModel *m = new QStandardItemModel(v);
+        for (NVidiaGPU *q: *smi->gpus)
+            m->appendRow(new QStandardItem(q->name));
+        v->setModel(m);
+        this->addedGPUInfo = true;
+    }
 }

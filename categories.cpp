@@ -8,7 +8,7 @@ Categories::Categories(QWidget *parent, QList<QList<QString> > *cats) :
     ui->setupUi(this);
 
     QListView *v = this->ui->categoryList;
-    model = new QStandardItemModel(this);
+    model = new QStandardItemModel(v);
 
     v->setModel(model);
 

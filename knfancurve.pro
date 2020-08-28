@@ -32,8 +32,9 @@ SOURCES += \
     qutiehelpers.cpp \
     dia.cpp \
     settingsframe.cpp \
-    nvidasmi.cpp \
-    mischelpers.cpp
+    mischelpers.cpp \
+    nvidiagpu.cpp \
+    nvidiasmi.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -42,8 +43,9 @@ HEADERS += \
     qutiehelpers.h \
     dia.h \
     settingsframe.h \
-    nvidasmi.h \
-    mischelpers.h
+    mischelpers.h \
+    nvidiagpu.h \
+    nvidiasmi.h
 
 TRANSLATIONS = nfancurvytr_de.ts
 

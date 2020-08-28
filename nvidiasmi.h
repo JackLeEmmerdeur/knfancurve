@@ -12,19 +12,11 @@
 #include <QMap>
 #include <QString>
 #include <QStringList>
+#include <QList>
+#include <iterator>
+#include "nvidiagpu.h"
 #include "mischelpers.h"
 #include "qutiehelpers.h"
-
-class NVidiaGPU
-{
-public:
-    QString id;
-    QString name;
-
-    NVidiaGPU(QString id, QString name);
-
-    friend QDebug operator <<(QDebug, const NVidiaGPU &);
-};
 
 class NVidiaSMI
 {
@@ -32,13 +24,20 @@ public:
     NVidiaSMI();
     ~NVidiaSMI();
 
-    int gpuCount();
     NVidiaGPU *gpu(int index);
 
-private:
-    QString smipath;
-    QProcess *proc;
     QList<NVidiaGPU *> *gpus = nullptr;
+
+    int gpuCount();
+
+    int getTemp();
+
+private:
+    void initGPUs();
+
+    QProcess *getProcess(QStringList args);
+
+    QString smipath;
 
 // private slots:
 // void finishedReadingGPUInfo(int processReturnValue);

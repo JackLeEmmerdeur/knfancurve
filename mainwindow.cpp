@@ -15,6 +15,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     this->nvidiaSMI = new NVidiaSMI();
 
+    qDebug() << this->nvidiaSMI->getTemp();
+
     QList<QList<QString> > *q = new QList<QList<QString> >();
     q->append(QList<QString>({":/icons/chart_curve", "Charts", "charts"}));
     q->append(QList<QString>({":/icons/cog", tr("My dude"), "settings"}));
@@ -78,7 +80,7 @@ void MainWindow::createSettingsFrame()
         this->settingsFrame = new SettingsFrame();
     contentLayout->addWidget(this->settingsFrame);
     this->settingsFrame->adjustSize();
-    this->settingsFrame->addDebugInfo(this->nvidiaSMI);
+    this->settingsFrame->addGPUInfo(this->nvidiaSMI);
 }
 
 void MainWindow::createDiaForm()

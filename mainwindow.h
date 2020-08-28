@@ -17,7 +17,7 @@
 #include <QSqlDatabase>
 #include <QApplication>
 #include <QTextCodec>
-#include "nvidasmi.h";
+#include "nvidiasmi.h";
 
 #include "categories.h"
 #include "settingsframe.h"
