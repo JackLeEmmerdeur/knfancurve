@@ -12,8 +12,9 @@ class NVidiaGPU
 public:
     QString id;
     QString name;
+    int index;
 
-    NVidiaGPU(QString id, QString name);
+    NVidiaGPU(int index, QString id, QString name);
     void initExtendedInfo();
 
     friend QDebug operator <<(QDebug, const NVidiaGPU &);

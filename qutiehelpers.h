@@ -5,6 +5,7 @@
 #include <QMessageBox>
 #include <QProcess>
 #include <QStringList>
+#include <QVariant>
 
 class QutieHelpers
 {
@@ -12,7 +13,6 @@ public:
     QutieHelpers();
     static void clearLayout(QLayout *layout);
     static void msgbox(const QString &title, const QString &msg);
-    static QProcess *runproc(const QString &procpath, QStringList args);
 };
 
 #endif // QUTIEHELPERS_H

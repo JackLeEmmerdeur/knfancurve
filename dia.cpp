@@ -8,6 +8,7 @@ Dia::Dia(QWidget *parent) :
     ui->setupUi(this);
     this->setRenderHint(QPainter::Antialiasing);
     this->init();
+    this->repainter = new DiaRepainter(this->chart, this->series);
 }
 
 Dia::~Dia()
@@ -15,20 +16,24 @@ Dia::~Dia()
     delete ui;
 }
 
+DiaRepainter *Dia::getRepainter()
+{
+    return this->repainter;
+}
+
 void Dia::init()
 {
+    this->series = new QAtomicPointer<QLineSeries>();
     QLineSeries *series = new QLineSeries();
-    series->append(0, 6);
-    series->append(2, 4);
-    series->append(3, 8);
-    series->append(7, 4);
-    series->append(10, 5);
+    this->series->store(series);
 
     QChart *chart = new QChart();
     chart->legend()->hide();
-    chart->addSeries(series);
     chart->createDefaultAxes();
     chart->setTitle("Simple line chart example");
+
+    this->chart = new QAtomicPointer<QChart>();
+    this->chart->store(chart);
 
     this->setChart(chart);
 }

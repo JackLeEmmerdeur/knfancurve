@@ -10,7 +10,9 @@
 #include <QMenu>
 #include <QToolButton>
 #include <QVariant>
-#include <dia.h>
+#include <QThreadPool>
+
+#include "dia.h"
 
 namespace Ui {
 class DiaForm;
@@ -26,7 +28,7 @@ public:
 
     QGridLayout *getGridLayout();
 
-    void addGraph();
+    void addGraph(QString name);
 
 public slots:
     void handleAddGraphMenuChanged(QAction *action);

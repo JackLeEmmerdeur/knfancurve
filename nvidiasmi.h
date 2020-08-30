@@ -17,6 +17,7 @@
 #include "nvidiagpu.h"
 #include "mischelpers.h"
 #include "qutiehelpers.h"
+#include "gpuhelpers.h"
 
 class NVidiaSMI
 {
@@ -28,14 +29,12 @@ public:
 
     QList<NVidiaGPU *> *gpus = nullptr;
 
-    int gpuCount();
-
+    int getGPUCount();
     int getTemp();
+    int getFanSpeed();
 
 private:
     void initGPUs();
-
-    QProcess *getProcess(QStringList args);
 
     QString smipath;
 

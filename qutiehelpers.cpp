@@ -22,13 +22,6 @@ void QutieHelpers::clearLayout(QLayout *layout)
     }
 }
 
-QProcess *QutieHelpers::runproc(const QString &procpath, QStringList args)
-{
-    QProcess *proc = new QProcess();
-    proc->start(procpath, args);
-    return proc;
-}
-
 void QutieHelpers::msgbox(const QString &title, const QString &msg)
 {
     QMessageBox msgbox;

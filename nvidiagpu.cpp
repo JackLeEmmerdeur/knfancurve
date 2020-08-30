@@ -1,7 +1,8 @@
 #include "nvidiagpu.h"
 
-NVidiaGPU::NVidiaGPU(QString id, QString name)
+NVidiaGPU::NVidiaGPU(int index, QString id, QString name)
 {
+    this->index = index;
     this->id = id;
     this->name = name;
 }

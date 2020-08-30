@@ -16,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
     this->nvidiaSMI = new NVidiaSMI();
 
     qDebug() << this->nvidiaSMI->getTemp();
+    qDebug() << this->nvidiaSMI->getFanSpeed();
 
     QList<QList<QString> > *q = new QList<QList<QString> >();
     q->append(QList<QString>({":/icons/chart_curve", "Charts", "charts"}));
@@ -37,6 +38,10 @@ MainWindow::MainWindow(QWidget *parent) :
         this,
         SLOT(handleCatIndexChange(QString,QString))
         );
+
+// connect(
+// this->
+// )
 // }
 }
 
@@ -80,7 +85,8 @@ void MainWindow::createSettingsFrame()
         this->settingsFrame = new SettingsFrame();
     contentLayout->addWidget(this->settingsFrame);
     this->settingsFrame->adjustSize();
-    this->settingsFrame->addGPUInfo(this->nvidiaSMI);
+    this->settingsFrame->readAllGPUInfo(this->nvidiaSMI);
+    this->settingsFrame->selectGPU(0);
 }
 
 void MainWindow::createDiaForm()

@@ -34,7 +34,9 @@ SOURCES += \
     settingsframe.cpp \
     mischelpers.cpp \
     nvidiagpu.cpp \
-    nvidiasmi.cpp
+    nvidiasmi.cpp \
+    gpuhelpers.cpp \
+    gpustatsmodel.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -45,7 +47,9 @@ HEADERS += \
     settingsframe.h \
     mischelpers.h \
     nvidiagpu.h \
-    nvidiasmi.h
+    nvidiasmi.h \
+    gpuhelpers.h \
+    gpustatsmodel.h
 
 TRANSLATIONS = nfancurvytr_de.ts
 
