@@ -27,6 +27,8 @@ public:
     explicit Categories(QWidget *parent = nullptr, QList<QList<QString> > *cats = nullptr);
     ~Categories();
 
+    void selectCategory(QString catId);
+
 private:
     Ui::Categories *ui;
     QStandardItemModel *model;

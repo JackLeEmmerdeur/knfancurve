@@ -15,14 +15,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
     this->nvidiaSMI = new NVidiaSMI();
 
-    qDebug() << this->nvidiaSMI->getTemp();
-    qDebug() << this->nvidiaSMI->getFanSpeed();
-
     QList<QList<QString> > *q = new QList<QList<QString> >();
     q->append(QList<QString>({":/icons/chart_curve", "Charts", "charts"}));
     q->append(QList<QString>({":/icons/cog", tr("My dude"), "settings"}));
 
     this->cats = new Categories(nullptr, q);
+
+    delete q;
 
     QFrame *f = ui->categoriesFrame;
     QHBoxLayout *l = new QHBoxLayout();
@@ -56,16 +55,27 @@ void MainWindow::handleCatIndexChange(const QString &oldCatId, const QString &ne
     bool oldIsCharts = oldCatId.compare("charts") == 0;
     bool oldIsSettings = oldCatId.compare("settings") == 0;
     bool newIsSettings = newCatId.compare("settings") == 0;
-
+    qDebug() << "newIsCharts:" << newIsCharts << "|oldIsCharts :" << oldIsCharts
+             << "|oldIsSettings :" << oldIsSettings << "|newIsSettings:" << newIsSettings;
     if (newIsCharts && !oldIsCharts) {
-        this->createDiaForm();
         if (oldIsSettings && this->settingsFrame != nullptr)
             this->settingsFrame->setParent(nullptr);
+        this->createDiaForm();
     } else if (newIsSettings) {
         if (this->dia != nullptr)
             this->dia->setParent(nullptr);
         this->createSettingsFrame();
     }
+}
+
+void MainWindow::handleAddSettingsMonitorBtnClicked()
+{
+    this->cats->selectCategory("charts");
+
+    QStandardItem *i = this->settingsFrame->getSelectedMonitorValue();
+
+    this->dia->addGraph(this->nvidiaSMI->gpu(0), i->data(Qt::DisplayRole).toString(),
+                        i->data(Qt::UserRole).toString());
 }
 
 MainWindow::~MainWindow()
@@ -80,21 +90,36 @@ MainWindow::~MainWindow()
 
 void MainWindow::createSettingsFrame()
 {
+    bool created = false;
+    qDebug() << "createSettingsFrame_start";
     QVBoxLayout *contentLayout = static_cast<QVBoxLayout *>(this->ui->contentLayout);
-    if (this->settingsFrame == nullptr)
+    if (this->settingsFrame == nullptr) {
+        created = true;
         this->settingsFrame = new SettingsFrame();
+    }
     contentLayout->addWidget(this->settingsFrame);
     this->settingsFrame->adjustSize();
     this->settingsFrame->readAllGPUInfo(this->nvidiaSMI);
     this->settingsFrame->selectGPU(0);
+
+    if (created)
+        connect(this->settingsFrame, SIGNAL(addMonitorBtnClicked()), this,
+                SLOT(handleAddSettingsMonitorBtnClicked()));
+
+    qDebug() << "createSettingsFrame_stop";
 }
 
 void MainWindow::createDiaForm()
 {
+    qDebug() << "createDiaForm_start";
     QVBoxLayout *contentLayout = static_cast<QVBoxLayout *>(this->ui->contentLayout);
 
-    if (this->dia == nullptr)
+    if (this->dia == nullptr) {
+        qDebug("create_dia");
         this->dia = new DiaForm();
+    }
     contentLayout->addWidget(this->dia);
     this->dia->adjustSize();
+
+    qDebug() << "createDiaForm_stop";
 }

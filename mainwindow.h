@@ -39,21 +39,17 @@ public:
 private slots:
     void handleCatIndexChange(const QString &oldCatId, const QString &newCatId);
     void quit();
+    void handleAddSettingsMonitorBtnClicked();
 
 private:
 
     Ui::MainWindow *ui;
-
     DiaForm *dia = nullptr;
-
-    Categories *cats = nullptr;
-
     SettingsFrame *settingsFrame = nullptr;
-
+    Categories *cats = nullptr;
     NVidiaSMI *nvidiaSMI = nullptr;
 
     void createDiaForm();
-
     void createSettingsFrame();
 };
 

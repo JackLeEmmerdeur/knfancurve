@@ -28,12 +28,15 @@ public:
 
     void readAllGPUInfo(NVidiaSMI *smi);
     void selectGPU(int index = 0);
+    QStandardItem *getSelectedMonitorValue();
 
 public slots:
     void handleSelectionChanged(QItemSelection sel1, QItemSelection sel2);
+    void handleAddGraphBtnClicked();
 
 signals:
     void gpuListSelectionChanged(QItemSelection sel);
+    void addMonitorBtnClicked();
 
 private:
     void initMonitorValues();

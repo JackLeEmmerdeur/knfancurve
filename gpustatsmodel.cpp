@@ -9,8 +9,12 @@ GPUStatsModel::~GPUStatsModel()
 {
     delete this->columns;
 
-    for (std::pair<int, QStringList> q: this->vals->toStdMap())
-        q.second.clear();
+    QMapIterator<int, QStringList> i(*this->vals);
+    while (i.hasNext()) {
+        i.next();
+        i.value().empty();
+    }
+
     delete this->vals;
 }
 

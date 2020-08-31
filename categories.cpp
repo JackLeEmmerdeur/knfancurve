@@ -44,9 +44,11 @@ void Categories::handleSelectionChanged(const QItemSelection &selected,
     if (!selected.indexes().isEmpty()) {
         QModelIndexList l1 = selected.indexes();
         QVariant newCatId = this->ui->categoryList->model()->data(l1.first(), Qt::UserRole);
-
         QVariant oldCatId;
         QModelIndexList l2 = deselected.indexes();
+
+        qDebug() << "newCatId:" << newCatId << "|" << "oldCatId:" << oldCatId << "|"
+                 << "deselectedIndex:" << l2;
         if (l2.count() > 0)
             oldCatId = this->ui->categoryList->model()->data(l2.first(), Qt::UserRole);
 
@@ -57,4 +59,21 @@ void Categories::handleSelectionChanged(const QItemSelection &selected,
 Categories::~Categories()
 {
     delete ui;
+}
+
+void Categories::selectCategory(QString catId)
+{
+    QModelIndex found;
+    QStandardItemModel *m = static_cast<QStandardItemModel *>(this->ui->categoryList->model());
+    for (int i = 0; i < m->rowCount(); i++) {
+        QModelIndex index = m->index(i, 0);
+        QVariant v = index.data(Qt::UserRole);
+        QString s = v.toString();
+        if (s.compare(catId, Qt::CaseSensitivity::CaseInsensitive) == 0) {
+            found = index;
+            break;
+        }
+    }
+    if (found.isValid())
+        this->ui->categoryList->setCurrentIndex(found);
 }

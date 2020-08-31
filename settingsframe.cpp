@@ -7,35 +7,59 @@ SettingsFrame::SettingsFrame(QWidget *parent) :
 {
     this->addedGPUInfo = false;
     ui->setupUi(this);
-
     this->initMonitorValues();
+    connect(this->ui->addGraphBtn, SIGNAL(clicked()), this, SLOT(handleAddGraphBtnClicked()));
 }
 
 SettingsFrame::~SettingsFrame()
 {
     delete this->ui;
-    delete this->smi;
     delete this->monitorValuesModel;
+}
+
+QStandardItem *SettingsFrame::getSelectedMonitorValue()
+{
+    return this->monitorValuesModel->itemFromIndex(
+        this->ui->monitorValuesListView->selectionModel()->currentIndex());
+}
+
+void SettingsFrame::handleAddGraphBtnClicked()
+{
+    emit addMonitorBtnClicked();
 }
 
 void SettingsFrame::handleSelectionChanged(QItemSelection sel1, QItemSelection sel2)
 {
     GPUStatsModel *m2 = static_cast<GPUStatsModel *>(this->ui->gpuStatsTable->model());
-
     m2->readAllGPUValues(smi->gpus->at(0));
-
     emit gpuListSelectionChanged(sel1);
 }
 
 void SettingsFrame::initMonitorValues()
 {
     this->monitorValuesModel = new QStandardItemModel();
-    this->monitorValuesModel->appendRow(new QStandardItem("fan.speed"));
-    this->monitorValuesModel->appendRow(new QStandardItem("temperature.gpu"));
-    this->monitorValuesModel->appendRow(new QStandardItem("temperature.memory"));
-    this->monitorValuesModel->appendRow(new QStandardItem("memory.used"));
-    this->monitorValuesModel->appendRow(new QStandardItem("power.draw"));
-    this->ui->monitorValues->setModel(this->monitorValuesModel);
+
+    QStandardItem *qsi = new QStandardItem("Lüfter: Geschwindigkeit");
+    qsi->setData(QVariant("fan.speed"), Qt::UserRole);
+    this->monitorValuesModel->appendRow(qsi);
+
+    qsi = new QStandardItem("GPU: Temperatur");
+    qsi->setData(QVariant("temperature.gpu"), Qt::UserRole);
+    this->monitorValuesModel->appendRow(qsi);
+
+    qsi = new QStandardItem("Speicher: Temperatur");
+    qsi->setData(QVariant("temperature.memory"), Qt::UserRole);
+    this->monitorValuesModel->appendRow(qsi);
+
+    qsi = new QStandardItem("Speicher: Benutzt");
+    qsi->setData(QVariant("memory.used"), Qt::UserRole);
+    this->monitorValuesModel->appendRow(qsi);
+
+    qsi = new QStandardItem("Strom: Letzter Wert");
+    qsi->setData(QVariant("power.draw"), Qt::UserRole);
+    this->monitorValuesModel->appendRow(qsi);
+
+    this->ui->monitorValuesListView->setModel(this->monitorValuesModel);
 }
 
 void SettingsFrame::selectGPU(int index)

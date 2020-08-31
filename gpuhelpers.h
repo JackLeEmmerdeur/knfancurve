@@ -14,7 +14,7 @@ class GPUHelpers
 public:
     GPUHelpers();
     static QProcess *createProcess(QStringList args);
-    static QProcess *runProcess(const QString &procpath, QStringList args);
+// static QProcess *runProcess(const QString &procpath, QStringList args);
     static QVariant *getProcRes(QStringList args, bool getLines);
     static QString readGPUValue(int index, QString gpuvalue);
 };

@@ -10,6 +10,9 @@ QString GPUHelpers::readGPUValue(int index, QString gpuvalue)
                                           "--format=csv,noheader"}, false);
 
     QString s = v->toString();
+
+    delete v;
+
     int i = s.indexOf(" ");
 
     if (i > -1)
@@ -22,6 +25,7 @@ QVariant *GPUHelpers::getProcRes(QStringList args, bool getLines = false)
 
     if (proc->waitForStarted() && proc->waitForFinished()) {
         QByteArray procRes = proc->readAllStandardOutput();
+
         QString procResStr = QTextCodec::codecForMib(106)->toUnicode(procRes);
 
         if (getLines)
@@ -31,16 +35,19 @@ QVariant *GPUHelpers::getProcRes(QStringList args, bool getLines = false)
     }
 
     delete proc;
+    return new QVariant("");
 }
 
 QProcess *GPUHelpers::createProcess(QStringList args)
 {
-    return GPUHelpers::runProcess("nvidia-smi", args);
-}
-
-QProcess *GPUHelpers::runProcess(const QString &procpath, QStringList args)
-{
     QProcess *proc = new QProcess();
-    proc->start(procpath, args);
+    proc->start("nvidia-smi", args);
     return proc;
 }
+
+// QProcess *GPUHelpers::runProcess(const QString &procpath, QStringList args)
+// {
+// QProcess *proc = new QProcess();
+// proc->start(procpath, args);
+// return proc;
+// }

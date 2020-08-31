@@ -13,6 +13,7 @@
 #include <QThreadPool>
 
 #include "dia.h"
+#include "nvidiagpu.h"
 
 namespace Ui {
 class DiaForm;
@@ -28,10 +29,7 @@ public:
 
     QGridLayout *getGridLayout();
 
-    void addGraph(QString name);
-
-public slots:
-    void handleAddGraphMenuChanged(QAction *action);
+    void addGraph(NVidiaGPU *gpu, QString caption, QString monitorValue);
 
 // private slots:
 // void on_pushButton_clicked();

@@ -5,6 +5,8 @@
 #include <QtCharts>
 #include <QRunnable>
 #include <QAtomicPointer>
+#include "nvidiagpu.h"
+#include "gpuhelpers.h"
 
 namespace Ui {
 class Dia;
@@ -16,100 +18,27 @@ class DiaRepainter : public QObject, public QRunnable
 
 public:
 
-    DiaRepainter(QAtomicPointer<QChart> *chart, QAtomicPointer<QLineSeries> *series)
-    {
-        this->series = series;
-        this->chart = chart;
-        this->paused = false;
-    }
+    DiaRepainter(QString monitorValue, QAtomicPointer<NVidiaGPU> *gpu,
+                 QAtomicPointer<QChart> *chart, QAtomicPointer<QLineSeries> *series);
 
-    void run()
-    {
-// _loop.exec();
-        // qDebug() << "Hello world from thread" << QThread::currentThread();
-
-        this->series->load()->clear();
-        this->series->load()->append(0, 1);
-        this->series->load()->append(2, 3);
-
-        QThread::msleep(1000);
-        this->series->load()->clear();
-        this->series->load()->append(0, 1);
-        this->series->load()->append(2, 3);
-        this->series->load()->append(4, 6);
-
-        QThread::msleep(1000);
-        this->series->load()->clear();
-        this->series->load()->append(0, 1);
-        this->series->load()->append(2, 3);
-        this->series->load()->append(4, 6);
-        this->series->load()->append(6, 4);
-
-        QThread::msleep(1000);
-        this->series->load()->append(0, 1);
-        this->series->load()->append(2, 3);
-        this->series->load()->append(4, 6);
-        this->series->load()->append(6, 4);
-        this->chart->load()->addSeries(this->series->load());
-
-        QThread::msleep(2000);
-
-// this->chart->load()->removeSeries(this->series->load());
-        this->series->load()->clear();
-        this->series->load()->append(0, 3);
-        this->series->load()->append(2, 6);
-        this->series->load()->append(4, 4);
-        this->series->load()->append(6, 2);
-
-        QThread::msleep(2000);
-        this->series->load()->clear();
-        this->series->load()->append(0, 6);
-        this->series->load()->append(2, 4);
-        this->series->load()->append(4, 2);
-        this->series->load()->append(6, 3);
-// this->chart->load()->addSeries(this->series->load());
-// this->chart->load()->addSeries(this->series->load());
-
-// QThread::sleep(2000);
-
-// QThread::sleep(2000);
-
-        // this->series->append(2, 4);
-        // this->series->append(3, 8);
-        // this->series->append(7, 4);
-        // this->series->append(10, 5);
-    }
-
-    void resume()
-    {
-        sync.lock();
-        this->paused = false;
-        sync.unlock();
-        pauseCond.wakeAll();
-    }
-
-    void pause()
-    {
-        sync.lock();
-        this->paused = true;
-        sync.unlock();
-    }
+    ~DiaRepainter();
+    void run();
+    void resume();
+    void pause();
 
 public slots:
     // you need a signal connected to this slot to exit the loop,
     // otherwise the thread running the loop would remain blocked...
-    void finishTask()
-    {
-// _loop.exit();
-        // _loop
-    }
+    void finishTask();
 
 private:
-    QEventLoop _loop;
+    QAtomicPointer<NVidiaGPU> *nvidiagpu;
     QAtomicPointer<QChart> *chart;
     QAtomicPointer<QLineSeries> *series;
+    QEventLoop _loop;
     QMutex sync;
     QWaitCondition pauseCond;
+    QString monitorValue;
     bool paused;
 };
 
@@ -118,7 +47,8 @@ class Dia : public QChartView
     Q_OBJECT
 
 public:
-    explicit Dia(QWidget *parent = nullptr);
+    explicit Dia(QWidget *parent = nullptr, NVidiaGPU *gpu = nullptr, QString caption = nullptr,
+                 QString monitorValue = nullptr);
     ~Dia();
 
     void init();
@@ -128,8 +58,10 @@ public:
 private:
     Ui::Dia *ui;
     DiaRepainter *repainter;
+    QAtomicPointer<NVidiaGPU> *nvidiagpu;
     QAtomicPointer<QLineSeries> *series;
     QAtomicPointer<QChart> *chart;
+    QString caption;
 };
 
 #endif // DIA_H

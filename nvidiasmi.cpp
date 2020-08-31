@@ -15,15 +15,17 @@ NVidiaSMI::NVidiaSMI()
 
 NVidiaSMI::~NVidiaSMI()
 {
+    for (auto gpu: *this->gpus)
+	delete gpu;
     if (this->gpus != nullptr)
-        delete this->gpus;
+	delete this->gpus;
 }
 
 void NVidiaSMI::initGPUs()
 {
     QVariant *procRes = GPUHelpers::getProcRes(QStringList({"-L"}), true);
     QStringList procResRows = procRes->toStringList();
-
+    delete procRes;
     int p, p2, index = 0;
 
     for (QString procResRow: procResRows) {
