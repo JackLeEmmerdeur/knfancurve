@@ -5,5 +5,6 @@
     </qresource>
     <qresource prefix="/translations">
         <file>nfancurvytr_de.qm</file>
+        <file>nfancurvytr_en.qm</file>
     </qresource>
 </RCC>

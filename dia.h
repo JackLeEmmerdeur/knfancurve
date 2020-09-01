@@ -18,8 +18,9 @@ class DiaRepainter : public QObject, public QRunnable
 
 public:
 
-    DiaRepainter(QString monitorValue, QAtomicPointer<NVidiaGPU> *gpu,
-                 QAtomicPointer<QChart> *chart, QAtomicPointer<QLineSeries> *series);
+    DiaRepainter(QString monitorValue, QAtomicPointer<NVidiaGPU> *gpu, int yAxisTicks,
+                 int xAxisTicks, unsigned long refreshMS, QAtomicPointer<QChart> *chart,
+                 QAtomicPointer<QLineSeries> *series);
 
     ~DiaRepainter();
     void run();
@@ -32,6 +33,8 @@ public slots:
     void finishTask();
 
 private:
+    int xAxisTicks, yAxisTicks;
+    unsigned long refreshMS;
     QAtomicPointer<NVidiaGPU> *nvidiagpu;
     QAtomicPointer<QChart> *chart;
     QAtomicPointer<QLineSeries> *series;
@@ -47,7 +50,8 @@ class Dia : public QChartView
     Q_OBJECT
 
 public:
-    explicit Dia(QWidget *parent = nullptr, NVidiaGPU *gpu = nullptr, QString caption = nullptr,
+    explicit Dia(QWidget *parent = nullptr, NVidiaGPU *gpu = nullptr, int xAxisTicks = 10,
+                 int yAxisTicks = 100, unsigned long refreshMS = 2000, QString caption = nullptr,
                  QString monitorValue = nullptr);
     ~Dia();
 
@@ -56,6 +60,7 @@ public:
     DiaRepainter *getRepainter();
 
 private:
+    int xAxisTicks, yAxisTicks;
     Ui::Dia *ui;
     DiaRepainter *repainter;
     QAtomicPointer<NVidiaGPU> *nvidiagpu;

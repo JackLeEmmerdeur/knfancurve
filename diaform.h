@@ -29,7 +29,8 @@ public:
 
     QGridLayout *getGridLayout();
 
-    void addGraph(NVidiaGPU *gpu, QString caption, QString monitorValue);
+    void addGraph(NVidiaGPU *gpu, int xAxisTicks, int yAxisTicks, unsigned long refreshMS,
+                  QString caption, QString monitorValue);
 
 // private slots:
 // void on_pushButton_clicked();

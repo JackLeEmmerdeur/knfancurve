@@ -65,18 +65,14 @@
          <item>
           <layout class="QVBoxLayout" name="verticalLayout_2">
            <item>
-            <widget class="QPushButton" name="addMonitorValueBtn">
+            <widget class="QPushButton" name="addGraphBtn">
              <property name="text">
-              <string>wert hinzufügen</string>
+              <string>add diagram</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="addGraphBtn">
-             <property name="text">
-              <string>diagramm hinzufügen</string>
-             </property>
-            </widget>
+            <layout class="QFormLayout" name="diagramConfigFormLayout"/>
            </item>
            <item>
             <spacer name="verticalSpacer">

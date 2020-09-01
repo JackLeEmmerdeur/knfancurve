@@ -16,8 +16,8 @@ MainWindow::MainWindow(QWidget *parent) :
     this->nvidiaSMI = new NVidiaSMI();
 
     QList<QList<QString> > *q = new QList<QList<QString> >();
-    q->append(QList<QString>({":/icons/chart_curve", "Charts", "charts"}));
-    q->append(QList<QString>({":/icons/cog", tr("My dude"), "settings"}));
+    q->append(QList<QString>({":/icons/chart_curve", tr("Charts"), "charts"}));
+    q->append(QList<QString>({":/icons/cog", tr("Settings"), "settings"}));
 
     this->cats = new Categories(nullptr, q);
 
@@ -37,11 +37,6 @@ MainWindow::MainWindow(QWidget *parent) :
         this,
         SLOT(handleCatIndexChange(QString,QString))
         );
-
-// connect(
-// this->
-// )
-// }
 }
 
 void MainWindow::quit()
@@ -74,7 +69,11 @@ void MainWindow::handleAddSettingsMonitorBtnClicked()
 
     QStandardItem *i = this->settingsFrame->getSelectedMonitorValue();
 
-    this->dia->addGraph(this->nvidiaSMI->gpu(0), i->data(Qt::DisplayRole).toString(),
+    this->dia->addGraph(this->nvidiaSMI->gpu(0),
+                        this->settingsFrame->getXAxisTicks(),
+                        50,
+                        this->settingsFrame->getRefreshMS(),
+                        i->data(Qt::DisplayRole).toString(),
                         i->data(Qt::UserRole).toString());
 }
 

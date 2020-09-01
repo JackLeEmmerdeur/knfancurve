@@ -89,17 +89,10 @@
    </property>
    <widget class="QMenu" name="menu_Datei">
     <property name="title">
-     <string>&amp;Datei</string>
+     <string comment="MMFile">&amp;File</string>
     </property>
-   </widget>
-   <widget class="QMenu" name="menu_Bearbeiten">
-    <property name="title">
-     <string>&amp;Bearbeiten</string>
-    </property>
-    <addaction name="actionEinstellungen"/>
    </widget>
    <addaction name="menu_Datei"/>
-   <addaction name="menu_Bearbeiten"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -117,7 +110,7 @@
   </action>
   <action name="actionEinstellungen">
    <property name="text">
-    <string comment="My Dude">&amp;Einstellungen</string>
+    <string comment="MMEditSettings">&amp;Settings</string>
    </property>
   </action>
  </widget>

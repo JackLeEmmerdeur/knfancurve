@@ -3,6 +3,7 @@
 GPUStatsModel::GPUStatsModel()
 {
     this->vals = new QMap<int, QStringList>();
+    this->columns = new QStringList({QObject::tr("Name"), tr("Value")});
 }
 
 GPUStatsModel::~GPUStatsModel()
@@ -16,24 +17,6 @@ GPUStatsModel::~GPUStatsModel()
     }
 
     delete this->vals;
-}
-
-void GPUStatsModel::readAllGPUValues(NVidiaGPU *gpu)
-{
-    this->columns = new QStringList({"Name", "Value"});
-    this->vals->insert(0,
-                       QStringList({"Total Memory",
-                                    GPUHelpers::readGPUValue(gpu->index, "memory.total")}));
-    this->vals->insert(1,
-                       QStringList({"Max. GPU Clock",
-                                    GPUHelpers::readGPUValue(gpu->index, "clocks.max.graphics")}));
-
-    this->vals->insert(2,
-                       QStringList({"Max. RAM Clock",
-                                    GPUHelpers::readGPUValue(gpu->index, "clocks.max.memory")}));
-    emit dataChanged(index(0, 0),
-                     index(rowCount(), columnCount()));
-    emit layoutChanged();
 }
 
 int GPUStatsModel::rowCount(const QModelIndex &parent) const
@@ -67,9 +50,9 @@ QVariant GPUStatsModel::headerData(int section, Qt::Orientation orientation, int
 {
     if (role == Qt::DisplayRole && orientation == Qt::Horizontal) {
         if (section == 0)
-            return QString("Name");
+            return QString(QObject::tr("Name"));
         else
-            return QString("Wert");
+            return QString(QObject::tr("Value"));
     }
     return QVariant();
 }

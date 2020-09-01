@@ -24,13 +24,14 @@ QGridLayout *DiaForm::getGridLayout()
     return this->ui->gridLayout;
 }
 
-void DiaForm::addGraph(NVidiaGPU *gpu, QString caption, QString monitorValue)
+void DiaForm::addGraph(NVidiaGPU *gpu, int xAxisTicks, int yAxisTicks, unsigned long refreshMS,
+                       QString caption, QString monitorValue)
 {
     QGridLayout *grid = this->ui->gridLayout;
     int c = grid->count();
     int x = c % 2;
     int y = c / 2;
-    Dia *dia = new Dia(nullptr, gpu, caption, monitorValue);
+    Dia *dia = new Dia(nullptr, gpu, xAxisTicks, yAxisTicks, refreshMS, caption, monitorValue);
     DiaRepainter *diapainter = dia->getRepainter();
     grid->addWidget(dia, y, x);
     QThreadPool::globalInstance()->start(diapainter);

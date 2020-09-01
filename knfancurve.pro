@@ -36,7 +36,8 @@ SOURCES += \
     nvidiagpu.cpp \
     nvidiasmi.cpp \
     gpuhelpers.cpp \
-    gpustatsmodel.cpp
+    gpustatsmodel.cpp \
+    intrangelineedit.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -49,9 +50,10 @@ HEADERS += \
     nvidiagpu.h \
     nvidiasmi.h \
     gpuhelpers.h \
-    gpustatsmodel.h
+    gpustatsmodel.h \
+    intrangelineedit.h
 
-TRANSLATIONS = nfancurvytr_de.ts
+TRANSLATIONS = nfancurvytr_de.ts nfancurvytr_en.ts
 
 # QMAKE_BUNDLE_DATA += nfancurvytr_de.qm
 
