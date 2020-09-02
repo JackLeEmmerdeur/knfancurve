@@ -1,4 +1,4 @@
-#include "gpuhelpers.h"
+#include "GPUHelpers.h"
 
 GPUHelpers::GPUHelpers()
 {
@@ -44,10 +44,3 @@ QProcess *GPUHelpers::createProcess(QStringList args)
     proc->start("nvidia-smi", args);
     return proc;
 }
-
-// QProcess *GPUHelpers::runProcess(const QString &procpath, QStringList args)
-// {
-// QProcess *proc = new QProcess();
-// proc->start(procpath, args);
-// return proc;
-// }

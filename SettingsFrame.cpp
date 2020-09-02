@@ -1,4 +1,4 @@
-#include "settingsframe.h"
+#include "SettingsFrame.h"
 #include "ui_settingsframe.h"
 
 SettingsFrame::SettingsFrame(QWidget *parent) :
@@ -48,7 +48,7 @@ unsigned long SettingsFrame::getRefreshMS()
     return static_cast<unsigned long>(this->refreshMSLineEdit->getLongValue());
 }
 
-void SettingsFrame::readAllGPUValues(GPUStatsModel *m, NVidiaGPU *gpu)
+void SettingsFrame::readAllGPUValues(GPUStatsModel *m, GPU *gpu)
 {
     QMap<int, QStringList> *mm = m->vals;
     mm->insert(0,
@@ -61,15 +61,7 @@ void SettingsFrame::readAllGPUValues(GPUStatsModel *m, NVidiaGPU *gpu)
     mm->insert(2,
                QStringList({tr("Max. RAM Clock"),
                             GPUHelpers::readGPUValue(gpu->index, "clocks.max.memory")}));
-    emit m->dataChanged(
-        m->index(0, 0),
-        m->index(m->rowCount(), m->columnCount()));
-
-    emit m->layoutChanged();
-
-// emit dataChanged(index(0, 0),
-// index(rowCount(), columnCount()));
-// emit layoutChanged();
+    QutieHelpers::refreshListView(m);
 }
 
 void SettingsFrame::handleAddGraphBtnClicked()
@@ -87,8 +79,8 @@ void SettingsFrame::handleSelectionChanged(QItemSelection sel1, QItemSelection s
 void SettingsFrame::handleRefreshLineEditFocusOut(IntRangeLineEdit *le, bool hasFocus, int value)
 {
     if (!le->hasAcceptableInput()) {
-        QMessageBox::warning(this, tr("Invalid number"),
-                             le->getValidationError(), QMessageBox::Ok);
+        QutieHelpers::warning(this, tr("Invalid Number"), le->getValidationError());
+
         le->setText(QString::number(le->getLastValue()));
     } else {
         le->setNewValue(value);
@@ -132,13 +124,13 @@ void SettingsFrame::selectGPU(int index)
     }
 }
 
-void SettingsFrame::readAllGPUInfo(NVidiaSMI *smi)
+void SettingsFrame::readAllGPUInfo(SMI *smi)
 {
     if (this->addedGPUInfo == false && smi->getGPUCount() > 0) {
         this->smi = smi;
         QListView *v = this->ui->gpuListView;
         QStandardItemModel *m = new QStandardItemModel(v);
-        for (NVidiaGPU *q: *smi->gpus)
+        for (GPU *q: *smi->gpus)
             m->appendRow(new QStandardItem(q->name));
         v->setModel(m);
         this->addedGPUInfo = true;

@@ -1,4 +1,4 @@
-#include "intrangelineedit.h"
+#include "IntRangeLineEdit.h"
 
 IntRangeLineEdit ::IntRangeLineEdit(QWidget *parent, IntRangeLineEditFocusType focusType,
                                     QString id, int defaultValue, int lower, int upper) :

@@ -1,4 +1,4 @@
-#include "gpustatsmodel.h"
+#include "GPUStatsModel.h"
 
 GPUStatsModel::GPUStatsModel()
 {

@@ -11,8 +11,8 @@
 #include <QStringList>
 #include <QMap>
 #include <QMapNode>
-#include "gpuhelpers.h"
-#include "nvidiagpu.h"
+#include "GPUHelpers.h"
+#include "GPU.h"
 
 class GPUStatsModel : public QAbstractTableModel
 {
@@ -31,7 +31,7 @@ public:
 private:
     QStringList *columns;
 
-    void readAllGPUValues(NVidiaGPU *gpu);
+    void readAllGPUValues(GPU *gpu);
 };
 
 #endif // GPUSTATSMODEL_H

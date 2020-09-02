@@ -12,31 +12,30 @@
 #include <QVariant>
 #include <QThreadPool>
 
-#include "dia.h"
-#include "nvidiagpu.h"
+#include "ChartWrapper.h"
+#include "GPU.h"
 
 namespace Ui {
-class DiaForm;
+class ChartsWidget;
 }
 
-class DiaForm : public QWidget
+class ChartsWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit DiaForm(QWidget *parent = nullptr);
-    ~DiaForm();
+    explicit ChartsWidget(QWidget *parent = nullptr);
+    ~ChartsWidget();
 
     QGridLayout *getGridLayout();
 
-    void addGraph(NVidiaGPU *gpu, int xAxisTicks, int yAxisTicks, unsigned long refreshMS,
+    void addGraph(GPU *gpu, int xAxisTicks, int yAxisTicks, unsigned long refreshMS,
                   QString caption, QString monitorValue);
 
-// private slots:
-// void on_pushButton_clicked();
+    void cancelGraphRepainter(int index);
 
 private:
-    Ui::DiaForm *ui;
+    Ui::ChartsWidget *ui;
 };
 
 #endif // DIAFORM_H

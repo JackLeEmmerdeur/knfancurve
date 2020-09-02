@@ -14,20 +14,20 @@
 #include <QStringList>
 #include <QList>
 #include <iterator>
-#include "nvidiagpu.h"
-#include "mischelpers.h"
-#include "qutiehelpers.h"
-#include "gpuhelpers.h"
+#include "GPU.h"
+#include "MiscHelpers.h"
+#include "QutieHelpers.h"
+#include "GPUHelpers.h"
 
-class NVidiaSMI
+class SMI
 {
 public:
-    NVidiaSMI();
-    ~NVidiaSMI();
+    SMI();
+    ~SMI();
 
-    NVidiaGPU *gpu(int index);
+    GPU *gpu(int index);
 
-    QList<NVidiaGPU *> *gpus = nullptr;
+    QList<GPU *> *gpus = nullptr;
 
     int getGPUCount();
     int getTemp();

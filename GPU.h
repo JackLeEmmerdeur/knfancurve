@@ -5,19 +5,18 @@
 #include <QProcess>
 #include <QTextCodec>
 #include <QString>
-#include "qutiehelpers.h"
+#include "QutieHelpers.h"
 
-class NVidiaGPU
+class GPU
 {
 public:
     QString id;
     QString name;
     int index;
 
-    NVidiaGPU(int index, QString id, QString name);
-    void initExtendedInfo();
+    GPU(int index, QString id, QString name);
 
-    friend QDebug operator <<(QDebug, const NVidiaGPU &);
+    friend QDebug operator <<(QDebug, const GPU &);
 private:
     bool extendedInfoInitialized;
 };

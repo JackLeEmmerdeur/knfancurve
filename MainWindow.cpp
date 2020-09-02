@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -13,13 +13,13 @@ MainWindow::MainWindow(QWidget *parent) :
 // } else {
     ui->setupUi(this);
 
-    this->nvidiaSMI = new NVidiaSMI();
+    this->nvidiaSMI = new SMI();
 
     QList<QList<QString> > *q = new QList<QList<QString> >();
     q->append(QList<QString>({":/icons/chart_curve", tr("Charts"), "charts"}));
     q->append(QList<QString>({":/icons/cog", tr("Settings"), "settings"}));
 
-    this->cats = new Categories(nullptr, q);
+    this->cats = new CategoriesWidget(nullptr, q);
 
     delete q;
 
@@ -50,8 +50,6 @@ void MainWindow::handleCatIndexChange(const QString &oldCatId, const QString &ne
     bool oldIsCharts = oldCatId.compare("charts") == 0;
     bool oldIsSettings = oldCatId.compare("settings") == 0;
     bool newIsSettings = newCatId.compare("settings") == 0;
-    qDebug() << "newIsCharts:" << newIsCharts << "|oldIsCharts :" << oldIsCharts
-             << "|oldIsSettings :" << oldIsSettings << "|newIsSettings:" << newIsSettings;
     if (newIsCharts && !oldIsCharts) {
         if (oldIsSettings && this->settingsFrame != nullptr)
             this->settingsFrame->setParent(nullptr);
@@ -71,7 +69,7 @@ void MainWindow::handleAddSettingsMonitorBtnClicked()
 
     this->dia->addGraph(this->nvidiaSMI->gpu(0),
                         this->settingsFrame->getXAxisTicks(),
-                        50,
+                        200,
                         this->settingsFrame->getRefreshMS(),
                         i->data(Qt::DisplayRole).toString(),
                         i->data(Qt::UserRole).toString());
@@ -90,7 +88,6 @@ MainWindow::~MainWindow()
 void MainWindow::createSettingsFrame()
 {
     bool created = false;
-    qDebug() << "createSettingsFrame_start";
     QVBoxLayout *contentLayout = static_cast<QVBoxLayout *>(this->ui->contentLayout);
     if (this->settingsFrame == nullptr) {
         created = true;
@@ -104,21 +101,14 @@ void MainWindow::createSettingsFrame()
     if (created)
         connect(this->settingsFrame, SIGNAL(addMonitorBtnClicked()), this,
                 SLOT(handleAddSettingsMonitorBtnClicked()));
-
-    qDebug() << "createSettingsFrame_stop";
 }
 
 void MainWindow::createDiaForm()
 {
-    qDebug() << "createDiaForm_start";
     QVBoxLayout *contentLayout = static_cast<QVBoxLayout *>(this->ui->contentLayout);
 
-    if (this->dia == nullptr) {
-        qDebug("create_dia");
-        this->dia = new DiaForm();
-    }
+    if (this->dia == nullptr)
+        this->dia = new ChartsWidget();
     contentLayout->addWidget(this->dia);
     this->dia->adjustSize();
-
-    qDebug() << "createDiaForm_stop";
 }

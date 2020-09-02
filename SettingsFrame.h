@@ -13,10 +13,10 @@
 #include <QLineEdit>
 #include <QMessageBox>
 
-#include "nvidiasmi.h"
-#include "nvidiagpu.h"
-#include "gpustatsmodel.h"
-#include "intrangelineedit.h"
+#include "SMI.h"
+#include "GPU.h"
+#include "GPUStatsModel.h"
+#include "IntRangeLineEdit.h"
 
 namespace Ui {
 class SettingsFrame;
@@ -30,7 +30,7 @@ public:
     explicit SettingsFrame(QWidget *parent = nullptr);
     ~SettingsFrame();
 
-    void readAllGPUInfo(NVidiaSMI *smi);
+    void readAllGPUInfo(SMI *smi);
     void selectGPU(int index = 0);
     QStandardItem *getSelectedMonitorValue();
     int getXAxisTicks();
@@ -48,12 +48,12 @@ signals:
 private:
     Ui::SettingsFrame *ui;
     bool addedGPUInfo;
-    NVidiaSMI *smi = nullptr;
+    SMI *smi = nullptr;
     QStandardItemModel *monitorValuesModel;
     IntRangeLineEdit *refreshMSLineEdit;
     IntRangeLineEdit *xAxisTicksLineEdit;
 
-    void readAllGPUValues(GPUStatsModel *m, NVidiaGPU *gpu);
+    void readAllGPUValues(GPUStatsModel *m, GPU *gpu);
     void initMonitorValues();
 };
 

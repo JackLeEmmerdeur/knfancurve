@@ -25,44 +25,44 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
-        main.cpp \
-        mainwindow.cpp \
-    categories.cpp \
-    diaform.cpp \
-    qutiehelpers.cpp \
-    dia.cpp \
-    settingsframe.cpp \
-    mischelpers.cpp \
-    nvidiagpu.cpp \
-    nvidiasmi.cpp \
-    gpuhelpers.cpp \
-    gpustatsmodel.cpp \
-    intrangelineedit.cpp
+    ChartWrapper.cpp \
+    GPUHelpers.cpp \
+    GPUStatsModel.cpp \
+    IntRangeLineEdit.cpp \
+    MainWindow.cpp \
+    MiscHelpers.cpp \
+    GPU.cpp \
+    SMI.cpp \
+    SettingsFrame.cpp \
+    QutieHelpers.cpp \
+    Main.cpp \
+    CategoriesWidget.cpp \
+    ChartsWidget.cpp
 
 HEADERS += \
-        mainwindow.h \
-    categories.h \
-    diaform.h \
-    qutiehelpers.h \
-    dia.h \
-    settingsframe.h \
-    mischelpers.h \
-    nvidiagpu.h \
-    nvidiasmi.h \
-    gpuhelpers.h \
-    gpustatsmodel.h \
-    intrangelineedit.h
+    ChartWrapper.h \
+    GPUHelpers.h \
+    GPUStatsModel.h \
+    IntRangeLineEdit.h \
+    MainWindow.h \
+    MiscHelpers.h \
+    GPU.h \
+    SMI.h \
+    SettingsFrame.h \
+    QutieHelpers.h \
+    CategoriesWidget.h \
+    ChartsWidget.h
 
 TRANSLATIONS = nfancurvytr_de.ts nfancurvytr_en.ts
 
 # QMAKE_BUNDLE_DATA += nfancurvytr_de.qm
 
 FORMS += \
-        mainwindow.ui \
-    categories.ui \
-    diaform.ui \
-    dia.ui \
-    settingsframe.ui
+    ChartWrapper.ui \
+    ChartsWidget.ui \
+    CategoriesWidget.ui \
+    MainWindow.ui \
+    SettingsFrame.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

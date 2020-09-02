@@ -17,12 +17,12 @@
 #include <QSqlDatabase>
 #include <QApplication>
 #include <QTextCodec>
-#include "nvidiasmi.h";
+#include "SMI.h";
 
-#include "categories.h"
-#include "settingsframe.h"
-#include "diaform.h"
-#include "qutiehelpers.h"
+#include "CategoriesWidget.h"
+#include "SettingsFrame.h"
+#include "ChartsWidget.h"
+#include "QutieHelpers.h"
 
 namespace Ui {
 class MainWindow;
@@ -44,10 +44,10 @@ private slots:
 private:
 
     Ui::MainWindow *ui;
-    DiaForm *dia = nullptr;
+    ChartsWidget *dia = nullptr;
     SettingsFrame *settingsFrame = nullptr;
-    Categories *cats = nullptr;
-    NVidiaSMI *nvidiaSMI = nullptr;
+    CategoriesWidget *cats = nullptr;
+    SMI *nvidiaSMI = nullptr;
 
     void createDiaForm();
     void createSettingsFrame();

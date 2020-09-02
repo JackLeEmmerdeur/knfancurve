@@ -1,4 +1,4 @@
-#include "mischelpers.h"
+#include "MiscHelpers.h"
 
 MiscHelpers::MiscHelpers()
 {

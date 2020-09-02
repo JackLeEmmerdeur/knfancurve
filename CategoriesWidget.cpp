@@ -1,9 +1,9 @@
-#include "categories.h"
+#include "CategoriesWidget.h"
 #include "ui_categories.h"
 
-Categories::Categories(QWidget *parent, QList<QList<QString> > *cats) :
+CategoriesWidget::CategoriesWidget(QWidget *parent, QList<QList<QString> > *cats) :
     QWidget(parent),
-    ui(new Ui::Categories)
+    ui(new Ui::CategoriesWidget)
 {
     ui->setupUi(this);
 
@@ -32,14 +32,14 @@ Categories::Categories(QWidget *parent, QList<QList<QString> > *cats) :
     QTimer::singleShot(100, this, SLOT(timeoutDefaultListSelection()));
 }
 
-void Categories::timeoutDefaultListSelection()
+void CategoriesWidget::timeoutDefaultListSelection()
 {
     this->ui->categoryList->selectionModel()->select(
         this->firstCatlistItem->index(), QItemSelectionModel::Select);
 }
 
-void Categories::handleSelectionChanged(const QItemSelection &selected,
-                                        const QItemSelection &deselected)
+void CategoriesWidget::handleSelectionChanged(const QItemSelection &selected,
+                                              const QItemSelection &deselected)
 {
     if (!selected.indexes().isEmpty()) {
         QModelIndexList l1 = selected.indexes();
@@ -47,8 +47,6 @@ void Categories::handleSelectionChanged(const QItemSelection &selected,
         QVariant oldCatId;
         QModelIndexList l2 = deselected.indexes();
 
-        qDebug() << "newCatId:" << newCatId << "|" << "oldCatId:" << oldCatId << "|"
-                 << "deselectedIndex:" << l2;
         if (l2.count() > 0)
             oldCatId = this->ui->categoryList->model()->data(l2.first(), Qt::UserRole);
 
@@ -56,12 +54,12 @@ void Categories::handleSelectionChanged(const QItemSelection &selected,
     }
 }
 
-Categories::~Categories()
+CategoriesWidget::~CategoriesWidget()
 {
     delete ui;
 }
 
-void Categories::selectCategory(QString catId)
+void CategoriesWidget::selectCategory(QString catId)
 {
     QModelIndex found;
     QStandardItemModel *m = static_cast<QStandardItemModel *>(this->ui->categoryList->model());

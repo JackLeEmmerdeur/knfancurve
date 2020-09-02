@@ -1,9 +1,9 @@
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include <QApplication>
 #include <QtCore/QTranslator>
 #include <QtCore/QLocale>
 #include <QMessageBox>
-#include "nvidiasmi.h"
+#include "SMI.h"
 
 int main(int argc, char *argv[])
 {

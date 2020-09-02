@@ -1,27 +1,27 @@
-#include "nvidiasmi.h"
+#include "SMI.h"
 
-NVidiaGPU *NVidiaSMI::gpu(int index)
+GPU *SMI::gpu(int index)
 {
     if (index > -1 && index < this->getGPUCount())
         return this->gpus->at(index);
     return nullptr;
 }
 
-NVidiaSMI::NVidiaSMI()
+SMI::SMI()
 {
     this->smipath = MiscHelpers::findBinfile("nvidia-smi");
     this->initGPUs();
 }
 
-NVidiaSMI::~NVidiaSMI()
+SMI::~SMI()
 {
     for (auto gpu: *this->gpus)
-	delete gpu;
+        delete gpu;
     if (this->gpus != nullptr)
-	delete this->gpus;
+        delete this->gpus;
 }
 
-void NVidiaSMI::initGPUs()
+void SMI::initGPUs()
 {
     QVariant *procRes = GPUHelpers::getProcRes(QStringList({"-L"}), true);
     QStringList procResRows = procRes->toStringList();
@@ -41,8 +41,8 @@ void NVidiaSMI::initGPUs()
 
         if (uuid.length() > 0) {
             if (this->gpus == nullptr)
-                this->gpus = new QList<NVidiaGPU *>();
-            this->gpus->push_back(new NVidiaGPU(index, uuid, name));
+                this->gpus = new QList<GPU *>();
+            this->gpus->push_back(new GPU(index, uuid, name));
         }
         index++;
     }
@@ -51,13 +51,13 @@ void NVidiaSMI::initGPUs()
     // connect(this->proc, SIGNAL(finished(int)), this, SLOT(finishedReadingGPUInfo(int)));
 }
 
-int NVidiaSMI::getGPUCount()
+int SMI::getGPUCount()
 {
     if (this->gpus == nullptr) return 0;
     return this->gpus->length();
 }
 
-int NVidiaSMI::getTemp()
+int SMI::getTemp()
 {
     QVariant *procRes
         = GPUHelpers::getProcRes(QStringList({"--query-gpu=temperature.gpu", "-i", "0",
@@ -65,7 +65,7 @@ int NVidiaSMI::getTemp()
     return procRes->toInt();
 }
 
-int NVidiaSMI::getFanSpeed()
+int SMI::getFanSpeed()
 {
     QVariant *proc = GPUHelpers::getProcRes(QStringList({"--query-gpu=fan.speed", "-i", "0",
                                                          "--format=csv,noheader"}), false);

@@ -16,21 +16,21 @@
 #include <QTimer>
 
 namespace Ui {
-class Categories;
+class CategoriesWidget;
 }
 
-class Categories : public QWidget
+class CategoriesWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit Categories(QWidget *parent = nullptr, QList<QList<QString> > *cats = nullptr);
-    ~Categories();
+    explicit CategoriesWidget(QWidget *parent = nullptr, QList<QList<QString> > *cats = nullptr);
+    ~CategoriesWidget();
 
     void selectCategory(QString catId);
 
 private:
-    Ui::Categories *ui;
+    Ui::CategoriesWidget *ui;
     QStandardItemModel *model;
     QStandardItem *firstCatlistItem;
 
