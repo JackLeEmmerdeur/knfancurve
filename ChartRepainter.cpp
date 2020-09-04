@@ -12,10 +12,16 @@ ChartRepainter::ChartRepainter(QObject *parent, QString monitorValue, QAtomicPoi
     this->monitorValue = monitorValue;
     this->series = series;
     this->canceled = new QAtomicInt(0);
+    this->paused = new QAtomicInt(0);
 }
 
 ChartRepainter::~ChartRepainter()
 {
+    if (this->canceled != nullptr)
+        delete canceled;
+
+    if (this->paused != nullptr)
+        delete paused;
 }
 
 QObject *ChartRepainter::getParent()
@@ -27,6 +33,10 @@ void ChartRepainter::run()
 {
     int i = 0;
     while (true) {
+        if (this->paused->load() == 1) {
+            while (this->paused->load() == 1)
+                QThread::msleep(1000);
+        }
         if (this->canceled->load() == 1)
             break;
         QString procRes = GPUHelpers::readGPUValue(
@@ -50,6 +60,12 @@ void ChartRepainter::run()
         i++;
     }
     emit stopped(this);
+}
+
+void ChartRepainter::pauseToggle()
+{
+    int i = this->paused->load();
+    this->paused->storeRelease((i == 0) ? 1 : 0);
 }
 
 void ChartRepainter::cancel()

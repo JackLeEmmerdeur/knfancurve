@@ -56,6 +56,11 @@ void ChartDataModel::handleGraphTick(double value)
     QutieHelpers::refreshListView(this);
 }
 
+QList<QList<QVariant> > *ChartDataModel::getGraphValues()
+{
+    return this->graphvalues;
+}
+
 ChartWrapper::ChartWrapper(QWidget *parent, GPU *gpu, int xAxisTicks, int yAxisTicks,
                            unsigned long refreshMS, QString caption, QString monitorValue) :
     QWidget(parent),
@@ -71,6 +76,8 @@ ChartWrapper::ChartWrapper(QWidget *parent, GPU *gpu, int xAxisTicks, int yAxisT
     connect(this->ui->closeGraphBtn, SIGNAL(clicked()), this, SLOT(handleClickedCloseGraphBtn()));
     connect(this->ui->showGraphDataBtn, SIGNAL(clicked()), this,
             SLOT(handleClickedGraphDataButton()));
+    connect(this->ui->exportDataToolBtn, SIGNAL(clicked()), this,
+            SLOT(handleClickedExportDataToolBtn()));
 
     this->splitter = new QSplitter(this);
 
@@ -98,10 +105,10 @@ ChartWrapper::ChartWrapper(QWidget *parent, GPU *gpu, int xAxisTicks, int yAxisT
     cv->setMinimumSize(QSize(100, 100));
     cv->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-    QListView *lv = new QListView(this->splitter);
+    this->graphDataListView = new QListView(this->splitter);
     cv->setMinimumSize(QSize(0, 0));
     this->splitter->addWidget(cv);
-    this->splitter->addWidget(lv);
+    this->splitter->addWidget(this->graphDataListView);
     this->splitter->setSizes(QList<int>({1, 0}));
 
     this->ui->graphDataContainer->addWidget(this->splitter);
@@ -114,8 +121,7 @@ ChartWrapper::ChartWrapper(QWidget *parent, GPU *gpu, int xAxisTicks, int yAxisT
             SLOT(handleStoppedChartRepainter(ChartRepainter*)));
     connect(this->repainter, SIGNAL(graphTicked(double)), this,
             SLOT(handleGraphTick(double)));
-    ChartDataModel *c = new ChartDataModel(this->repainter);
-    lv->setModel(c);
+    this->graphDataListView->setModel(new ChartDataModel(this->repainter));
 }
 
 ChartWrapper::~ChartWrapper()
@@ -132,6 +138,34 @@ void ChartWrapper::handleStoppedChartRepainter(ChartRepainter *repainter)
 void ChartWrapper::handleClickedCloseGraphBtn()
 {
     this->repainter->cancel();
+}
+
+void ChartWrapper::handleClickedExportDataToolBtn()
+{
+    QString fileName = QFileDialog::getSaveFileName(this,
+                                                    tr("Save Graph-Data"), "",
+                                                    tr("Comma Separated (*.csv)"));
+
+    ChartDataModel *m = static_cast<ChartDataModel *>(this->graphDataListView->model());
+
+    QFile out(fileName);
+
+    if (!out.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        QutieHelpers::warning(this, tr("Error"), tr("Could not create File"));
+        return;
+    }
+
+    QTextStream s(&out);
+
+    this->getRepainter()->pauseToggle();
+    QList<QList<QVariant> > *gd = m->getGraphValues();
+    QListIterator<QList<QVariant> > it(*gd);
+    while (it.hasNext()) {
+        QList<QVariant> v = it.next();
+        s << v.at(0).toString() << "," << v.at(1).toString() << "\n";
+    }
+    out.close();
+    this->getRepainter()->pauseToggle();
 }
 
 void ChartWrapper::handleClickedGraphDataButton()

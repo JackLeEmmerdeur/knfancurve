@@ -24,6 +24,7 @@ public:
     ~ChartRepainter();
     void run();
     void cancel();
+    void pauseToggle();
 
     QObject *getParent();
 
@@ -37,7 +38,8 @@ private:
     QObject *parent;
     QAtomicPointer<GPU> *nvidiagpu;
     QAtomicPointer<QLineSeries> *series = nullptr;
-    QAtomicInt *canceled;
+    QAtomicInt *canceled = nullptr;
+    QAtomicInt *paused = nullptr;
     QString monitorValue;
 };
 

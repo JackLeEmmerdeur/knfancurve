@@ -11,6 +11,7 @@
 #include <QAbstractListModel>
 #include <QList>
 #include <QListView>
+#include <QFileDialog>
 #include <QTime>
 #include <QSizePolicy>
 #include "GPU.h"
@@ -32,6 +33,7 @@ public:
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
+    QList<QList<QVariant> > *getGraphValues();
 
 public slots:
     void handleGraphTick(double value);
@@ -60,6 +62,7 @@ public slots:
     void handleClickedCloseGraphBtn();
     void handleClickedGraphDataButton();
     void handleStoppedChartRepainter(ChartRepainter *repainter);
+    void handleClickedExportDataToolBtn();
     void handleGraphTick(double value);
 
 private:
@@ -67,6 +70,7 @@ private:
     bool graphDataShown = false;
     Ui::ChartWrapper *ui;
     QSplitter *splitter;
+    QListView *graphDataListView;
     ChartRepainter *repainter;
     QAtomicPointer<QLineSeries> *series;
     QAtomicPointer<GPU> *nvidiagpu;
