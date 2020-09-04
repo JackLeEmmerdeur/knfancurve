@@ -17,6 +17,7 @@ QString GPUHelpers::readGPUValue(int index, QString gpuvalue)
 
     if (i > -1)
         return s.mid(0, i);
+    return s;
 }
 
 QVariant *GPUHelpers::getProcRes(QStringList args, bool getLines = false)

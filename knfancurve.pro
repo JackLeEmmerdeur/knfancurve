@@ -37,7 +37,8 @@ SOURCES += \
     QutieHelpers.cpp \
     Main.cpp \
     CategoriesWidget.cpp \
-    ChartsWidget.cpp
+    ChartsWidget.cpp \
+    ChartRepainter.cpp
 
 HEADERS += \
     ChartWrapper.h \
@@ -51,7 +52,8 @@ HEADERS += \
     SettingsFrame.h \
     QutieHelpers.h \
     CategoriesWidget.h \
-    ChartsWidget.h
+    ChartsWidget.h \
+    ChartRepainter.h
 
 TRANSLATIONS = nfancurvytr_de.ts nfancurvytr_en.ts
 

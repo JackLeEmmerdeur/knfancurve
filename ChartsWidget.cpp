@@ -1,5 +1,5 @@
 #include "ChartsWidget.h"
-#include "ui_diaform.h"
+#include "ui_ChartsWidget.h"
 
 ChartsWidget::ChartsWidget(QWidget *parent) :
     QWidget(parent),
@@ -23,6 +23,13 @@ QGridLayout *ChartsWidget::getGridLayout()
     return this->ui->gridLayout;
 }
 
+void ChartsWidget::chartRepainterStopped(ChartRepainter *repainter)
+{
+    ChartWrapper *w = static_cast<ChartWrapper *>(repainter->getParent());
+    this->ui->gridLayout->removeWidget(w);
+    delete w;
+}
+
 void ChartsWidget::addGraph(GPU *gpu, int xAxisTicks, int yAxisTicks, unsigned long refreshMS,
                             QString caption, QString monitorValue)
 {
@@ -30,13 +37,17 @@ void ChartsWidget::addGraph(GPU *gpu, int xAxisTicks, int yAxisTicks, unsigned l
     int c = grid->count();
     int x = c % 2;
     int y = c / 2;
-    ChartWrapper *dia = new ChartWrapper(nullptr, gpu, xAxisTicks, yAxisTicks, refreshMS, caption,
+    ChartWrapper *dia = new ChartWrapper(this, gpu, xAxisTicks, yAxisTicks, refreshMS, caption,
                                          monitorValue);
-    ChartRepainter *diapainter = dia->getRepainter();
+
+    connect(dia, SIGNAL(chartRepainterStopped(ChartRepainter*)), this,
+            SLOT(chartRepainterStopped(ChartRepainter*)));
+
     grid->addWidget(dia, y, x);
-    QThreadPool::globalInstance()->start(diapainter);
+    QThreadPool::globalInstance()->start(dia->getRepainter());
 }
 
 void ChartsWidget::cancelGraphRepainter(int index)
 {
+    this->ui->gridLayout->itemAt(index);
 }

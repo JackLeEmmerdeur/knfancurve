@@ -14,7 +14,7 @@ public:
     QutieHelpers();
     static void clearLayout(QLayout *layout);
     static void msgbox(const QString &title, const QString &msg);
-    static void refreshListView(QAbstractItemModel *m);
+    static void refreshListView(QAbstractItemModel *m, int startrow = -1, int endrow = -1);
     static void warning(QWidget *parent, QString title, QString msg);
 };
 

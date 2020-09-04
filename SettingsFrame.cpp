@@ -1,5 +1,5 @@
 #include "SettingsFrame.h"
-#include "ui_settingsframe.h"
+#include "ui_SettingsFrame.h"
 
 SettingsFrame::SettingsFrame(QWidget *parent) :
     QFrame(parent),
@@ -92,23 +92,23 @@ void SettingsFrame::initMonitorValues()
     this->monitorValuesModel = new QStandardItemModel();
 
     QStandardItem *qsi = new QStandardItem(tr("Fan: Speed"));
-    qsi->setData(QVariant("fan.speed"), Qt::UserRole);
+    qsi->setData(QList<QVariant>({"fan.speed", 100}), Qt::UserRole);
     this->monitorValuesModel->appendRow(qsi);
 
     qsi = new QStandardItem(tr("GPU: Temperature"));
-    qsi->setData(QVariant("temperature.gpu"), Qt::UserRole);
+    qsi->setData(QList<QVariant>({"temperature.gpu", 100}), Qt::UserRole);
     this->monitorValuesModel->appendRow(qsi);
 
     qsi = new QStandardItem(tr("Memory: Temperature"));
-    qsi->setData(QVariant("temperature.memory"), Qt::UserRole);
+    qsi->setData(QList<QVariant>({"temperature.memory", 100}), Qt::UserRole);
     this->monitorValuesModel->appendRow(qsi);
 
     qsi = new QStandardItem(tr("Memory: Used"));
-    qsi->setData(QVariant("memory.used"), Qt::UserRole);
+    qsi->setData(QList<QVariant>({"memory.used", 6000}), Qt::UserRole);
     this->monitorValuesModel->appendRow(qsi);
 
     qsi = new QStandardItem(tr("Power: Last value"));
-    qsi->setData(QVariant("power.draw"), Qt::UserRole);
+    qsi->setData(QList<QVariant>({"power.draw", 70}), Qt::UserRole);
     this->monitorValuesModel->appendRow(qsi);
 
     this->ui->monitorValuesListView->setModel(this->monitorValuesModel);

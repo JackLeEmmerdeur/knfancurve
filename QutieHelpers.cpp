@@ -20,12 +20,11 @@ void QutieHelpers::clearLayout(QLayout *layout)
     }
 }
 
-void QutieHelpers::refreshListView(QAbstractItemModel *m)
+void QutieHelpers::refreshListView(QAbstractItemModel *m, int startrow, int endrow)
 {
     emit m->dataChanged(
-        m->index(0, 0),
-        m->index(m->rowCount(), m->columnCount()));
-
+        m->index((startrow > -1) ? startrow : 0, 0),
+        m->index((endrow > -1 && endrow >= startrow) ? endrow : m->rowCount(), m->columnCount()));
     emit m->layoutChanged();
 }
 

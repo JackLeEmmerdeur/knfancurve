@@ -1,5 +1,5 @@
 #include "MainWindow.h"
-#include "ui_mainwindow.h"
+#include "ui_MainWindow.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -67,12 +67,16 @@ void MainWindow::handleAddSettingsMonitorBtnClicked()
 
     QStandardItem *i = this->settingsFrame->getSelectedMonitorValue();
 
+    QVariant v = i->data(Qt::UserRole);
+
+    QList<QVariant> vl = v.toList();
+
     this->dia->addGraph(this->nvidiaSMI->gpu(0),
                         this->settingsFrame->getXAxisTicks(),
-                        200,
+                        vl.at(1).toInt(),
                         this->settingsFrame->getRefreshMS(),
                         i->data(Qt::DisplayRole).toString(),
-                        i->data(Qt::UserRole).toString());
+                        vl.at(0).toString());
 }
 
 MainWindow::~MainWindow()

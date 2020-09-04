@@ -4,50 +4,43 @@
 #include <QWidget>
 #include <QtCharts>
 #include <QRunnable>
+#include <QSplitter>
 #include <QAtomicPointer>
+#include <QValueAxis>
+#include <QColor>
+#include <QAbstractListModel>
+#include <QList>
+#include <QListView>
+#include <QTime>
 #include "GPU.h"
 #include "GPUHelpers.h"
+#include "ChartRepainter.h"
+#include "QutieHelpers.h"
 
 namespace Ui {
 class ChartWrapper;
 }
 
-class ChartRepainter : public QObject, public QRunnable
+class ChartDataModel : public QAbstractListModel
 {
     Q_OBJECT
-
 public:
+    ChartDataModel(ChartRepainter *repainter);
 
-    ChartRepainter(QString monitorValue, QAtomicPointer<GPU> *gpu, int yAxisTicks, int xAxisTicks,
-                   unsigned long refreshMS, QAtomicPointer<QChart> *chart,
-                   QAtomicPointer<QLineSeries> *series);
-
-    ~ChartRepainter();
-    void run();
-    void cancel();
-// void resume();
-// void pause();
+    int rowCount(const QModelIndex &parent = QModelIndex()) const;
+    int columnCount(const QModelIndex &parent = QModelIndex()) const;
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
+    QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
 public slots:
-    // you need a signal connected to this slot to exit the loop,
-    // otherwise the thread running the loop would remain blocked...
-// void finishTask();
+    void handleGraphTick(double value);
 
 private:
-    int xAxisTicks, yAxisTicks;
-    unsigned long refreshMS;
-    QAtomicPointer<GPU> *nvidiagpu;
-    QAtomicPointer<QChart> *chart;
-    QAtomicPointer<QLineSeries> *series;
-    QAtomicInt *canceled;
-// QEventLoop _loop;
-// QMutex sync;
-// QWaitCondition pauseCond;
-// bool paused;
-    QString monitorValue;
+    QList<QList<QVariant> > *graphvalues;
+    ChartRepainter *repainter;
 };
 
-class ChartWrapper : public QChartView
+class ChartWrapper : public QWidget
 {
     Q_OBJECT
 
@@ -57,17 +50,23 @@ public:
                           QString caption = nullptr, QString monitorValue = nullptr);
     ~ChartWrapper();
 
-    void init();
-
     ChartRepainter *getRepainter();
+
+signals:
+    void chartRepainterStopped(ChartRepainter *);
+
+public slots:
+    void handleCloseGraphBtn();
+    void stoppedChartRepainter(ChartRepainter *repainter);
+    void handleGraphTick(double value);
 
 private:
     int xAxisTicks, yAxisTicks;
     Ui::ChartWrapper *ui;
+
     ChartRepainter *repainter;
-    QAtomicPointer<GPU> *nvidiagpu;
     QAtomicPointer<QLineSeries> *series;
-    QAtomicPointer<QChart> *chart;
+    QAtomicPointer<GPU> *nvidiagpu;
     QString caption;
 };
 

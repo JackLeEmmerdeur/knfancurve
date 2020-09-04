@@ -31,18 +31,16 @@ int GPUStatsModel::columnCount(const QModelIndex &parent) const
 
 QVariant GPUStatsModel::data(const QModelIndex &index, int role) const
 {
-    if (!index.isValid())
-        return QVariant();
+    if (index.isValid()) {
+        if (index.row() >= this->rowCount())
+            return QVariant();
 
-    if (index.row() >= this->rowCount())
-        return QVariant();
-
-    if (role == Qt::DisplayRole) {
-        QStringList q = this->vals->value(index.row());
-        if (q.length() > 0)
-            return q.at(index.column());
+        if (role == Qt::DisplayRole) {
+            QStringList q = this->vals->value(index.row());
+            if (q.length() > 0)
+                return q.at(index.column());
+        }
     }
-
     return QVariant();
 }
 

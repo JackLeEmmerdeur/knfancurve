@@ -1,5 +1,5 @@
 #include "CategoriesWidget.h"
-#include "ui_categories.h"
+#include "ui_CategoriesWidget.h"
 
 CategoriesWidget::CategoriesWidget(QWidget *parent, QList<QList<QString> > *cats) :
     QWidget(parent),

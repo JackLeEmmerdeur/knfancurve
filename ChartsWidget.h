@@ -13,6 +13,7 @@
 #include <QThreadPool>
 
 #include "ChartWrapper.h"
+#include "ChartRepainter.h"
 #include "GPU.h"
 
 namespace Ui {
@@ -33,6 +34,9 @@ public:
                   QString caption, QString monitorValue);
 
     void cancelGraphRepainter(int index);
+
+public slots:
+    void chartRepainterStopped(ChartRepainter *repainter);
 
 private:
     Ui::ChartsWidget *ui;

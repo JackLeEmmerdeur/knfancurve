@@ -1,107 +1,144 @@
 #include "ChartWrapper.h"
-#include "ui_dia.h"
+#include "ui_ChartWrapper.h"
 
-ChartRepainter::ChartRepainter(QString monitorValue, QAtomicPointer<GPU> *gpu, int yAxisTicks,
-                               int xAxisTicks, unsigned long refreshMS,
-                               QAtomicPointer<QChart> *chart, QAtomicPointer<QLineSeries> *series)
+ChartDataModel::ChartDataModel(ChartRepainter *repainter)
 {
-    this->xAxisTicks = xAxisTicks;
-    this->yAxisTicks = yAxisTicks;
-    this->refreshMS = refreshMS;
-    this->nvidiagpu = gpu;
-    this->monitorValue = monitorValue;
-    this->series = series;
-    this->chart = chart;
-    this->canceled = new QAtomicInt(0);
-// this->paused = false;
+    this->graphvalues = nullptr;
+    this->repainter = repainter;
+    connect(this->repainter, SIGNAL(graphTicked(double)), this, SLOT(handleGraphTick(double)));
 }
 
-ChartRepainter::~ChartRepainter()
+int ChartDataModel::rowCount(const QModelIndex &parent) const
 {
+    if (this->graphvalues == nullptr)
+        return 0;
+    return this->graphvalues->count();
 }
 
-void ChartRepainter::run()
+int ChartDataModel::columnCount(const QModelIndex &parent) const
 {
-    int i = 0;
-    while (true) {
-        if (this->canceled->load() == 1)
-            break;
+    return 1;
+}
 
-        QString procRes = GPUHelpers::readGPUValue(
-            this->nvidiagpu->load()->index, this->monitorValue);
-        double dbl = procRes.toDouble();
+QVariant ChartDataModel::data(const QModelIndex &index, int role) const
+{
+    if (index.isValid()) {
+        if (index.row() >= this->rowCount())
+            return QVariant();
 
-        if (i >= this->xAxisTicks+1) {
-            QLineSeries *ls = this->series->load();
-            QList<QPointF> pl = this->series->load()->points();
-            int c = pl.count();
-            ls->clear();
-            for (int a = 1; a < c; a++)
-                ls->append(a-1, pl[a].y());
-            ls->append(c-1, dbl);
-        } else {
-            int x = this->series->load()->count();
-            this->series->load()->append(x, dbl);
+        if (role == Qt::DisplayRole) {
+            QList<QVariant> q = this->graphvalues->at(index.row());
+            if (q.length() > 0)
+                return q.at(1);
         }
-        QThread::msleep(this->refreshMS);
-        i++;
     }
+    return QVariant();
 }
 
-void ChartRepainter::cancel()
+QVariant ChartDataModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    this->canceled->testAndSetAcquire(0, 1);
+    if (role == Qt::DisplayRole && orientation == Qt::Horizontal) {
+        if (section == 0)
+            return QString(QObject::tr("Wert"));
+    }
+    return QVariant();
+}
+
+void ChartDataModel::handleGraphTick(double value)
+{
+    if (graphvalues == nullptr)
+        this->graphvalues = new QList<QList<QVariant> >();
+
+    QVariant graphValueTime = QVariant(QTime::currentTime());
+    QVariant graphValue = value;
+    this->graphvalues->append(QList<QVariant>({graphValueTime, graphValue}));
+    int c = this->graphvalues->count();
+    QutieHelpers::refreshListView(this);
 }
 
 ChartWrapper::ChartWrapper(QWidget *parent, GPU *gpu, int xAxisTicks, int yAxisTicks,
                            unsigned long refreshMS, QString caption, QString monitorValue) :
-    QChartView(parent),
+    QWidget(parent),
     ui(new Ui::ChartWrapper)
 {
     ui->setupUi(this);
+
     this->xAxisTicks = xAxisTicks;
     this->yAxisTicks = yAxisTicks;
     this->nvidiagpu = new QAtomicPointer<GPU>(gpu);
     this->caption = caption;
-    this->setRenderHint(QPainter::Antialiasing);
-    this->init();
-    this->repainter = new ChartRepainter(monitorValue, this->nvidiagpu, yAxisTicks, xAxisTicks,
-                                         refreshMS, this->chart, this->series);
+
+    connect(this->ui->closeGraphBtn, SIGNAL(clicked()), this, SLOT(handleCloseGraphBtn()));
+
+    QSplitter *splitter = new QSplitter(this);
+
+    QChart *chart = new QChart();
+    chart->legend()->hide();
+    chart->setTitle(this->caption);
+    chart->createDefaultAxes();
+
+    QLineSeries *lineseries = new QLineSeries();
+    this->series = new QAtomicPointer<QLineSeries>(lineseries);
+    chart->addSeries(lineseries);
+
+    QValueAxis *yAxis = new QValueAxis();
+    yAxis->setMax(this->yAxisTicks);
+    chart->setAxisY(yAxis, lineseries);
+
+    QValueAxis *xAxis = new QValueAxis();
+    xAxis->setMax(this->xAxisTicks);
+    chart->setAxisX(xAxis, lineseries);
+
+    QChartView *cv = new QChartView(splitter);
+    cv->setRenderHint(QPainter::Antialiasing);
+    cv->setChart(chart);
+    cv->setParent(this);
+
+    QListView *lv = new QListView(splitter);
+
+    splitter->addWidget(cv);
+    splitter->addWidget(lv);
+    splitter->setSizes(QList<int>({1, 0}));
+
+    this->ui->graphDataContainer->addWidget(splitter);
+
+    this->repainter = new ChartRepainter(this, monitorValue, this->nvidiagpu, yAxisTicks,
+                                         xAxisTicks,
+                                         refreshMS, this->series);
+
+    connect(this->repainter, SIGNAL(stopped(ChartRepainter*)), this,
+            SLOT(stoppedChartRepainter(ChartRepainter*)));
+    connect(this->repainter, SIGNAL(graphTicked(double)), this,
+            SLOT(handleGraphTick(double)));
+    ChartDataModel *c = new ChartDataModel(this->repainter);
+    lv->setModel(c);
 }
 
 ChartWrapper::~ChartWrapper()
 {
     delete ui;
     delete this->nvidiagpu;
-    delete this->series;
-    delete this->chart;
+}
+
+void ChartWrapper::stoppedChartRepainter(ChartRepainter *repainter)
+{
+    emit chartRepainterStopped(repainter);
+}
+
+void ChartWrapper::handleCloseGraphBtn()
+{
+    this->repainter->cancel();
+}
+
+void ChartWrapper::handleGraphTick(double value)
+{
+    QString s = QString::number(value, 'f', 2);
+
+// this->ui->currentGraphValueLCD->setDigitCount(s.length());
+    this->ui->currentGraphValueLCD->display(value);
 }
 
 ChartRepainter *ChartWrapper::getRepainter()
 {
     return this->repainter;
-}
-
-void ChartWrapper::init()
-{
-    this->series = new QAtomicPointer<QLineSeries>();
-
-    QLineSeries *series = new QLineSeries();
-    this->series->store(series);
-
-    QChart *chart = new QChart();
-    chart->addSeries(series);
-    chart->legend()->hide();
-    chart->createDefaultAxes();
-    chart->setTitle(this->caption);
-
-    QAbstractAxis *yAxis = chart->axisY();
-    yAxis->setMax(this->yAxisTicks);
-
-    QAbstractAxis *xAxis = chart->axisX();
-    xAxis->setMax(this->xAxisTicks);
-
-    this->chart = new QAtomicPointer<QChart>();
-    this->chart->store(chart);
-    this->setChart(chart);
 }

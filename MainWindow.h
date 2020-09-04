@@ -17,7 +17,7 @@
 #include <QSqlDatabase>
 #include <QApplication>
 #include <QTextCodec>
-#include "SMI.h";
+#include "SMI.h"
 
 #include "CategoriesWidget.h"
 #include "SettingsFrame.h"
