@@ -9,6 +9,7 @@
 #include <QWidgetAction>
 #include <QMenu>
 #include <QToolButton>
+#include <QSplitter>
 #include <QVariant>
 #include <QThreadPool>
 
@@ -28,18 +29,17 @@ public:
     explicit ChartsWidget(QWidget *parent = nullptr);
     ~ChartsWidget();
 
-    QGridLayout *getGridLayout();
+    QVBoxLayout *getChartVBoxLayout();
 
     void addGraph(GPU *gpu, int xAxisTicks, int yAxisTicks, unsigned long refreshMS,
                   QString caption, QString monitorValue);
-
-    void cancelGraphRepainter(int index);
 
 public slots:
     void chartRepainterStopped(ChartRepainter *repainter);
 
 private:
     Ui::ChartsWidget *ui;
+    int graphcount = 0;
 };
 
 #endif // DIAFORM_H

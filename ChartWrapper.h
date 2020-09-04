@@ -12,6 +12,7 @@
 #include <QList>
 #include <QListView>
 #include <QTime>
+#include <QSizePolicy>
 #include "GPU.h"
 #include "GPUHelpers.h"
 #include "ChartRepainter.h"
@@ -56,14 +57,16 @@ signals:
     void chartRepainterStopped(ChartRepainter *);
 
 public slots:
-    void handleCloseGraphBtn();
-    void stoppedChartRepainter(ChartRepainter *repainter);
+    void handleClickedCloseGraphBtn();
+    void handleClickedGraphDataButton();
+    void handleStoppedChartRepainter(ChartRepainter *repainter);
     void handleGraphTick(double value);
 
 private:
     int xAxisTicks, yAxisTicks;
+    bool graphDataShown = false;
     Ui::ChartWrapper *ui;
-
+    QSplitter *splitter;
     ChartRepainter *repainter;
     QAtomicPointer<QLineSeries> *series;
     QAtomicPointer<GPU> *nvidiagpu;

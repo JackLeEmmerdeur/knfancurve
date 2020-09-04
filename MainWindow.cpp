@@ -16,8 +16,9 @@ MainWindow::MainWindow(QWidget *parent) :
     this->nvidiaSMI = new SMI();
 
     QList<QList<QString> > *q = new QList<QList<QString> >();
-    q->append(QList<QString>({":/icons/chart_curve", tr("Charts"), "charts"}));
+
     q->append(QList<QString>({":/icons/cog", tr("Settings"), "settings"}));
+    q->append(QList<QString>({":/icons/chart_curve", tr("Charts"), "charts"}));
 
     this->cats = new CategoriesWidget(nullptr, q);
 

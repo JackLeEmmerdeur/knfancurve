@@ -10,44 +10,64 @@ ChartsWidget::ChartsWidget(QWidget *parent) :
 
 ChartsWidget::~ChartsWidget()
 {
-    for (int i = 0; i < this->ui->gridLayout->count(); ++i) {
-        QWidget *w = this->ui->gridLayout->itemAt(i)->widget();
-        if (w != nullptr)
-            delete w;
-    }
+// for (int i = 0; i < this->ui->gridLayout->count(); ++i) {
+// QWidget *w = this->ui->gridLayout->itemAt(i)->widget();
+// if (w != nullptr)
+// delete w;
+// }
     delete this->ui;
 }
 
-QGridLayout *ChartsWidget::getGridLayout()
+QVBoxLayout *ChartsWidget::getChartVBoxLayout()
 {
-    return this->ui->gridLayout;
+    return this->ui->chartVBoxLayout;
 }
 
 void ChartsWidget::chartRepainterStopped(ChartRepainter *repainter)
 {
+    QSplitter *splitter = static_cast<QSplitter *>(repainter->getParent()->parent());
     ChartWrapper *w = static_cast<ChartWrapper *>(repainter->getParent());
-    this->ui->gridLayout->removeWidget(w);
+    this->ui->chartVBoxLayout->removeWidget(w);
     delete w;
+    this->graphcount--;
+    if (splitter->count() == 0)
+        delete splitter;
 }
 
 void ChartsWidget::addGraph(GPU *gpu, int xAxisTicks, int yAxisTicks, unsigned long refreshMS,
                             QString caption, QString monitorValue)
 {
-    QGridLayout *grid = this->ui->gridLayout;
-    int c = grid->count();
+    QVBoxLayout *vboxlayout = this->ui->chartVBoxLayout;
+    int c = this->graphcount;
     int x = c % 2;
     int y = c / 2;
+
+    QSplitter *splitter = nullptr;
+    if (x == 0) {
+        splitter = new QSplitter(this);
+        vboxlayout->addWidget(splitter);
+    } else {
+        splitter = static_cast<QSplitter *>(vboxlayout->itemAt(y)->widget());
+    }
     ChartWrapper *dia = new ChartWrapper(this, gpu, xAxisTicks, yAxisTicks, refreshMS, caption,
                                          monitorValue);
+
+    splitter->addWidget(dia);
 
     connect(dia, SIGNAL(chartRepainterStopped(ChartRepainter*)), this,
             SLOT(chartRepainterStopped(ChartRepainter*)));
 
-    grid->addWidget(dia, y, x);
-    QThreadPool::globalInstance()->start(dia->getRepainter());
-}
+    splitter->addWidget(dia);
 
-void ChartsWidget::cancelGraphRepainter(int index)
-{
-    this->ui->gridLayout->itemAt(index);
+    int vboxlayoutHeight = vboxlayout->geometry().height();
+
+    if (vboxlayoutHeight > 0 && c > 0) {
+        int f = vboxlayoutHeight / c;
+        qDebug() << f;
+        for (int i = 0; i < c; i++)
+            vboxlayout->itemAt(i)->geometry().setHeight(f);
+    }
+
+    this->graphcount++;
+    QThreadPool::globalInstance()->start(dia->getRepainter());
 }

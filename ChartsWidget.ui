@@ -71,7 +71,7 @@
          <number>0</number>
         </property>
         <item>
-         <layout class="QGridLayout" name="gridLayout"/>
+         <layout class="QVBoxLayout" name="chartVBoxLayout"/>
         </item>
        </layout>
       </widget>

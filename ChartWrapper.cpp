@@ -68,9 +68,11 @@ ChartWrapper::ChartWrapper(QWidget *parent, GPU *gpu, int xAxisTicks, int yAxisT
     this->nvidiagpu = new QAtomicPointer<GPU>(gpu);
     this->caption = caption;
 
-    connect(this->ui->closeGraphBtn, SIGNAL(clicked()), this, SLOT(handleCloseGraphBtn()));
+    connect(this->ui->closeGraphBtn, SIGNAL(clicked()), this, SLOT(handleClickedCloseGraphBtn()));
+    connect(this->ui->showGraphDataBtn, SIGNAL(clicked()), this,
+            SLOT(handleClickedGraphDataButton()));
 
-    QSplitter *splitter = new QSplitter(this);
+    this->splitter = new QSplitter(this);
 
     QChart *chart = new QChart();
     chart->legend()->hide();
@@ -89,25 +91,27 @@ ChartWrapper::ChartWrapper(QWidget *parent, GPU *gpu, int xAxisTicks, int yAxisT
     xAxis->setMax(this->xAxisTicks);
     chart->setAxisX(xAxis, lineseries);
 
-    QChartView *cv = new QChartView(splitter);
+    QChartView *cv = new QChartView(this->splitter);
     cv->setRenderHint(QPainter::Antialiasing);
     cv->setChart(chart);
     cv->setParent(this);
+    cv->setMinimumSize(QSize(100, 100));
+    cv->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-    QListView *lv = new QListView(splitter);
+    QListView *lv = new QListView(this->splitter);
+    cv->setMinimumSize(QSize(0, 0));
+    this->splitter->addWidget(cv);
+    this->splitter->addWidget(lv);
+    this->splitter->setSizes(QList<int>({1, 0}));
 
-    splitter->addWidget(cv);
-    splitter->addWidget(lv);
-    splitter->setSizes(QList<int>({1, 0}));
-
-    this->ui->graphDataContainer->addWidget(splitter);
+    this->ui->graphDataContainer->addWidget(this->splitter);
 
     this->repainter = new ChartRepainter(this, monitorValue, this->nvidiagpu, yAxisTicks,
                                          xAxisTicks,
                                          refreshMS, this->series);
 
     connect(this->repainter, SIGNAL(stopped(ChartRepainter*)), this,
-            SLOT(stoppedChartRepainter(ChartRepainter*)));
+            SLOT(handleStoppedChartRepainter(ChartRepainter*)));
     connect(this->repainter, SIGNAL(graphTicked(double)), this,
             SLOT(handleGraphTick(double)));
     ChartDataModel *c = new ChartDataModel(this->repainter);
@@ -120,22 +124,28 @@ ChartWrapper::~ChartWrapper()
     delete this->nvidiagpu;
 }
 
-void ChartWrapper::stoppedChartRepainter(ChartRepainter *repainter)
+void ChartWrapper::handleStoppedChartRepainter(ChartRepainter *repainter)
 {
     emit chartRepainterStopped(repainter);
 }
 
-void ChartWrapper::handleCloseGraphBtn()
+void ChartWrapper::handleClickedCloseGraphBtn()
 {
     this->repainter->cancel();
 }
 
+void ChartWrapper::handleClickedGraphDataButton()
+{
+    if (this->graphDataShown)
+        this->splitter->setSizes({1, 0});
+    else
+        this->splitter->setSizes({2, 1});
+    this->graphDataShown = !this->graphDataShown;
+}
+
 void ChartWrapper::handleGraphTick(double value)
 {
-    QString s = QString::number(value, 'f', 2);
-
-// this->ui->currentGraphValueLCD->setDigitCount(s.length());
-    this->ui->currentGraphValueLCD->display(value);
+    this->ui->currentGraphValueLCD->display(QString::number(value, 'f', 2));
 }
 
 ChartRepainter *ChartWrapper::getRepainter()
