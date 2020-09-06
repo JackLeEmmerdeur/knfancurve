@@ -42,8 +42,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    this->dia->stopAllRepainters(true);
-    event->ignore();
+    if (this->dia != nullptr && this->dia->getGraphCount() > 0) {
+        this->dia->stopAllRepainters(true);
+        event->ignore();
+    }
 }
 
 void MainWindow::quit()

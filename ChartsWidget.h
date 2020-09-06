@@ -38,6 +38,8 @@ public:
     void addGraph(GPU *gpu, int xAxisTicks, int yAxisTicks, unsigned long refreshMS,
                   QString caption, QString monitorValue);
 
+    int getGraphCount();
+
 public slots:
     void chartRepainterStopped(ChartRepainter *repainter);
 

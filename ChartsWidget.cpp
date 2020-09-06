@@ -18,12 +18,17 @@ QVBoxLayout *ChartsWidget::getChartVBoxLayout()
     return this->ui->chartVBoxLayout;
 }
 
+int ChartsWidget::getGraphCount()
+{
+    return this->graphcount;
+}
+
 void ChartsWidget::stopAllRepainters(bool quitInProgress)
 {
     this->quitInProgress = quitInProgress;
     QVBoxLayout *vboxlayout = this->ui->chartVBoxLayout;
     int c = this->graphcount;
-    int cr = static_cast<int>(ceil(c/2));
+    int cr = (c == 1) ? 1 : static_cast<int>(ceil(c/2));
 
     for (int i = 0; i < cr; i++) {
         QSplitter *w = static_cast<QSplitter *>(vboxlayout->itemAt(i%2)->widget());
