@@ -95,8 +95,8 @@ void SettingsFrame::initMonitorValues()
     qsi->setData(QList<QVariant>({"fan.speed", 100}), Qt::UserRole);
     this->monitorValuesModel->appendRow(qsi);
 
-    qsi = new QStandardItem(tr("Memory: Temperature"));
-    qsi->setData(QList<QVariant>({"temperature.memory", 100}), Qt::UserRole);
+    qsi = new QStandardItem(tr("GPU: Temperature"));
+    qsi->setData(QList<QVariant>({"temperature.gpu", 100}), Qt::UserRole);
     this->monitorValuesModel->appendRow(qsi);
 
     qsi = new QStandardItem(tr("Memory: Used"));

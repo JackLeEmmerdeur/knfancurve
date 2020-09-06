@@ -12,6 +12,8 @@
 #include <QSplitter>
 #include <QVariant>
 #include <QThreadPool>
+#include <QSizePolicy>
+#include <QResizeEvent>
 
 #include "ChartWrapper.h"
 #include "ChartRepainter.h"
@@ -31,15 +33,22 @@ public:
 
     QVBoxLayout *getChartVBoxLayout();
 
+    void stopAllRepainters(bool quitInProgress);
+
     void addGraph(GPU *gpu, int xAxisTicks, int yAxisTicks, unsigned long refreshMS,
                   QString caption, QString monitorValue);
 
 public slots:
     void chartRepainterStopped(ChartRepainter *repainter);
 
+signals:
+    void quitReady();
+    void stoppedFromParent(ChartRepainter *);
+
 private:
     Ui::ChartsWidget *ui;
     int graphcount = 0;
+    bool quitInProgress = false;
 };
 
 #endif // DIAFORM_H

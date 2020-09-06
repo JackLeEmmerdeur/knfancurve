@@ -10,9 +10,11 @@
 #include <QColor>
 #include <QAbstractListModel>
 #include <QList>
+#include <QDebug>
 #include <QListView>
 #include <QFileDialog>
 #include <QTime>
+#include <QResizeEvent>
 #include <QSizePolicy>
 #include "GPU.h"
 #include "GPUHelpers.h"
@@ -57,11 +59,13 @@ public:
 
 signals:
     void chartRepainterStopped(ChartRepainter *);
+    void stoppedFromParent(ChartRepainter *);
 
 public slots:
     void handleClickedCloseGraphBtn();
     void handleClickedGraphDataButton();
     void handleStoppedChartRepainter(ChartRepainter *repainter);
+    void handleStoppedFromParent(ChartRepainter *repainter);
     void handleClickedExportDataToolBtn();
     void handleGraphTick(double value);
 

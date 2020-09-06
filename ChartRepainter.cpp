@@ -13,6 +13,9 @@ ChartRepainter::ChartRepainter(QObject *parent, QString monitorValue, QAtomicPoi
     this->series = series;
     this->canceled = new QAtomicInt(0);
     this->paused = new QAtomicInt(0);
+
+    connect(parent, SIGNAL(stoppedFromParent(ChartRepainter*)), this,
+            SLOT(handleStoppedFromParent(ChartRepainter*)));
 }
 
 ChartRepainter::~ChartRepainter()
@@ -22,6 +25,11 @@ ChartRepainter::~ChartRepainter()
 
     if (this->paused != nullptr)
         delete paused;
+}
+
+void ChartRepainter::handleStoppedFromParent(ChartRepainter *repainter)
+{
+    this->canceled->testAndSetAcquire(0, 1);
 }
 
 QObject *ChartRepainter::getParent()

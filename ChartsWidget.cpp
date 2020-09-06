@@ -10,17 +10,32 @@ ChartsWidget::ChartsWidget(QWidget *parent) :
 
 ChartsWidget::~ChartsWidget()
 {
-// for (int i = 0; i < this->ui->gridLayout->count(); ++i) {
-// QWidget *w = this->ui->gridLayout->itemAt(i)->widget();
-// if (w != nullptr)
-// delete w;
-// }
     delete this->ui;
 }
 
 QVBoxLayout *ChartsWidget::getChartVBoxLayout()
 {
     return this->ui->chartVBoxLayout;
+}
+
+void ChartsWidget::stopAllRepainters(bool quitInProgress)
+{
+    this->quitInProgress = quitInProgress;
+    QVBoxLayout *vboxlayout = this->ui->chartVBoxLayout;
+    int c = this->graphcount;
+    int cr = static_cast<int>(ceil(c/2));
+
+    for (int i = 0; i < cr; i++) {
+        QSplitter *w = static_cast<QSplitter *>(vboxlayout->itemAt(i%2)->widget());
+        if (w->count() > 0) {
+            ChartWrapper *wr1 = static_cast<ChartWrapper *>(w->widget(0));
+            emit stoppedFromParent(wr1->getRepainter());
+            if (w->count() > 1) {
+                ChartWrapper *wr2 = static_cast<ChartWrapper *>(w->widget(1));
+                emit stoppedFromParent(wr2->getRepainter());
+            }
+        }
+    }
 }
 
 void ChartsWidget::chartRepainterStopped(ChartRepainter *repainter)
@@ -32,23 +47,31 @@ void ChartsWidget::chartRepainterStopped(ChartRepainter *repainter)
     this->graphcount--;
     if (splitter->count() == 0)
         delete splitter;
+
+    if (this->quitInProgress && this->graphcount == 0)
+        emit quitReady();
 }
 
 void ChartsWidget::addGraph(GPU *gpu, int xAxisTicks, int yAxisTicks, unsigned long refreshMS,
                             QString caption, QString monitorValue)
 {
     QVBoxLayout *vboxlayout = this->ui->chartVBoxLayout;
+
     int c = this->graphcount;
     int x = c % 2;
     int y = c / 2;
 
     QSplitter *splitter = nullptr;
+
     if (x == 0) {
         splitter = new QSplitter(this);
         vboxlayout->addWidget(splitter);
     } else {
         splitter = static_cast<QSplitter *>(vboxlayout->itemAt(y)->widget());
     }
+
+    splitter->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+
     ChartWrapper *dia = new ChartWrapper(this, gpu, xAxisTicks, yAxisTicks, refreshMS, caption,
                                          monitorValue);
 
@@ -59,15 +82,16 @@ void ChartsWidget::addGraph(GPU *gpu, int xAxisTicks, int yAxisTicks, unsigned l
 
     splitter->addWidget(dia);
 
-    int vboxlayoutHeight = vboxlayout->geometry().height();
+    this->graphcount++;
 
-    if (vboxlayoutHeight > 0 && c > 0) {
-        int f = vboxlayoutHeight / c;
-        qDebug() << f;
-        for (int i = 0; i < c; i++)
-            vboxlayout->itemAt(i)->geometry().setHeight(f);
+    int layoutheight = (static_cast<QWidget *>(this->parent()))->geometry().height();
+
+// splitter->setFixedHeight(layoutheight/graphcount);
+
+    for (int i = 0; i < c; i++) {
+        if (i % 2 == 0)
+            vboxlayout->itemAt(i%2)->widget()->setFixedHeight(layoutheight/graphcount);
     }
 
-    this->graphcount++;
     QThreadPool::globalInstance()->start(dia->getRepainter());
 }

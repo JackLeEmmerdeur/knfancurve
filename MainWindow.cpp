@@ -40,7 +40,17 @@ MainWindow::MainWindow(QWidget *parent) :
         );
 }
 
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    this->dia->stopAllRepainters(true);
+    event->ignore();
+}
+
 void MainWindow::quit()
+{
+}
+
+void MainWindow::handleQuitReady()
 {
     QApplication::quit();
 }
@@ -111,9 +121,9 @@ void MainWindow::createSettingsFrame()
 void MainWindow::createDiaForm()
 {
     QVBoxLayout *contentLayout = static_cast<QVBoxLayout *>(this->ui->contentLayout);
-
     if (this->dia == nullptr)
         this->dia = new ChartsWidget();
     contentLayout->addWidget(this->dia);
+    connect(this->dia, SIGNAL(quitReady()), this, SLOT(handleQuitReady()));
     this->dia->adjustSize();
 }

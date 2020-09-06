@@ -103,7 +103,6 @@ ChartWrapper::ChartWrapper(QWidget *parent, GPU *gpu, int xAxisTicks, int yAxisT
     cv->setChart(chart);
     cv->setParent(this);
     cv->setMinimumSize(QSize(100, 100));
-    cv->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     this->graphDataListView = new QListView(this->splitter);
     cv->setMinimumSize(QSize(0, 0));
@@ -116,11 +115,17 @@ ChartWrapper::ChartWrapper(QWidget *parent, GPU *gpu, int xAxisTicks, int yAxisT
     this->repainter = new ChartRepainter(this, monitorValue, this->nvidiagpu, yAxisTicks,
                                          xAxisTicks,
                                          refreshMS, this->series);
+    this->repainter->setProperty("name", monitorValue);
 
     connect(this->repainter, SIGNAL(stopped(ChartRepainter*)), this,
             SLOT(handleStoppedChartRepainter(ChartRepainter*)));
+
     connect(this->repainter, SIGNAL(graphTicked(double)), this,
             SLOT(handleGraphTick(double)));
+
+    connect(parent, SIGNAL(stoppedFromParent(ChartRepainter*)), this,
+            SLOT(handleStoppedFromParent(ChartRepainter*)));
+
     this->graphDataListView->setModel(new ChartDataModel(this->repainter));
 }
 
@@ -133,6 +138,11 @@ ChartWrapper::~ChartWrapper()
 void ChartWrapper::handleStoppedChartRepainter(ChartRepainter *repainter)
 {
     emit chartRepainterStopped(repainter);
+}
+
+void ChartWrapper::handleStoppedFromParent(ChartRepainter *repainter)
+{
+    emit stoppedFromParent(repainter);
 }
 
 void ChartWrapper::handleClickedCloseGraphBtn()

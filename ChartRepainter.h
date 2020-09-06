@@ -8,6 +8,7 @@
 #include <QtCharts>
 #include <QAtomicPointer>
 #include <QAtomicInt>
+#include <Qt>
 
 #include "GPU.h"
 #include "GPUHelpers.h"
@@ -28,9 +29,13 @@ public:
 
     QObject *getParent();
 
+private slots:
+    void handleStoppedFromParent(ChartRepainter *);
+
 signals:
     void graphTicked(double value);
     void stopped(ChartRepainter *);
+    void stopRepainter(ChartRepainter *);
 
 private:
     int xAxisTicks, yAxisTicks;

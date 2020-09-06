@@ -17,6 +17,7 @@
 #include <QSqlDatabase>
 #include <QApplication>
 #include <QTextCodec>
+#include <QCloseEvent>
 #include "SMI.h"
 
 #include "CategoriesWidget.h"
@@ -36,10 +37,13 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    void closeEvent(QCloseEvent *event);
+
 private slots:
     void handleCatIndexChange(const QString &oldCatId, const QString &newCatId);
     void quit();
     void handleAddSettingsMonitorBtnClicked();
+    void handleQuitReady();
 
 private:
 
