@@ -5,13 +5,15 @@ Initially meant to be a GUI-frontend [nan0s7/nfancurve](https://github.com/nan0s
 
 The graph part is nearly done and I plan to tackle the fan-control part either by executing the logic of the shell script with Qt process-calls in a long running thread OR just executing the original shell-script, which would probably be faster.
 
-### Build
+<br>
 
-#### With QtCreator
+## Build
+
+### With QtCreator
 
 If you got QtCreator development already set up you can spare yourself the below instructions and just open the .pro file in QtCreator and build the application.
 
-#### Docker
+### Docker
 
 Included is a dockerfile that builds a moderate sized (about 1gig) debian:buster-slim image with just the base cmake and Qt5 build environment. 
 
@@ -19,23 +21,22 @@ I'm Planning to implement a composer-file for the next steps but for now this is
 
 <br>
 
-### Step 1
+#### Step 1
 
-#### 1.1 Change to the cloned project folder
+##### 1.1 Change to the cloned project folder
 `cd /home/USER/projects/knfancurve`
 
-#### 1.2 Create a build folder
-#### either in parent-folder of the project folder...
+##### 1.2 Create a build folder
+##### either in parent-folder of the project folder...
 `mkdir ../linuxbuild`
 
-#### 1.3 or in source folder... 
+##### 1.3 or in source folder... 
 `mkdir linuxbuild`
 
-<br>
 
-### Step 2
+#### Step 2
 
-#### Edit the volumes in docker-compose.yml
+##### Edit the volumes in docker-compose.yml
 
 Example:
 
@@ -53,9 +54,7 @@ in step 1.2 above to the container folder `/docker/build`
 2. Maps the current directory (step 1.1), the sourcefolder,
 to the container folder `/docker/src`    
 
-<br>
-
-### Step 3
+#### Step 3
 Inside the your cloned project dir run
 `docker-compose up`
 
@@ -69,7 +68,7 @@ Everytime you want to build in future just call `docker-compose up` and have a f
  
 <br>
 
-#### To do (without priorities):
+### To do (without priorities):
 
 * CSV logging needs regular memory purge. Better solution: SQLite or redis  
 * Read muuuuch more infos from card within configuration-tab card-infos
