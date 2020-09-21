@@ -3,3 +3,6 @@ Initially meant to be a GUI-frontend [nan0s7/nfancurve](https://github.com/nan0s
 The graph part is nearly done and I plan to tackle the fan-control part either by executing the logic of the shell script with Qt process-calls in a long running thread OR just executing the original shell-script, which would probably be faster.
 
 Visit [the github repo](https://github.com/JackLeEmmerdeur/knfancurve) to learn how to build a wip-version
+
+![Tab1](https://i.imgur.com/COiQSy3.png)
+![Tab1](https://i.imgur.com/IE3Xym9.png)
