@@ -1,0 +1,7 @@
+version: '3'
+services:
+  debian_build:
+    build: .
+    volumes:
+      - ../dockerlinux:/docker/build
+      - .:/docker/src
