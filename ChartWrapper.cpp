@@ -80,8 +80,10 @@ ChartWrapper::ChartWrapper(QWidget *parent, GPU *gpu, int xAxisTicks, int yAxisT
             SLOT(handleClickedExportDataToolBtn()));
 
     this->splitter = new QSplitter(this);
+    this->splitter->setMinimumHeight(100);
 
     QChart *chart = new QChart();
+    chart->setMinimumHeight(100);
     chart->legend()->hide();
     chart->setTitle(this->caption);
     chart->createDefaultAxes();
@@ -105,13 +107,11 @@ ChartWrapper::ChartWrapper(QWidget *parent, GPU *gpu, int xAxisTicks, int yAxisT
     cv->setMinimumSize(QSize(100, 100));
 
     this->graphDataListView = new QListView(this->splitter);
-    cv->setMinimumSize(QSize(0, 0));
     this->splitter->addWidget(cv);
     this->splitter->addWidget(this->graphDataListView);
     this->splitter->setSizes(QList<int>({1, 0}));
 
     this->ui->graphDataContainer->addWidget(this->splitter);
-
     this->repainter = new ChartRepainter(this, monitorValue, this->nvidiagpu, yAxisTicks,
                                          xAxisTicks,
                                          refreshMS, this->series);

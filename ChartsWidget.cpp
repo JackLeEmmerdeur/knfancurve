@@ -71,6 +71,7 @@ void ChartsWidget::addGraph(GPU *gpu, int xAxisTicks, int yAxisTicks, unsigned l
     if (x == 0) {
         splitter = new QSplitter(this);
         vboxlayout->addWidget(splitter);
+        vboxlayout->setStretchFactor(splitter, 1);
     } else {
         splitter = static_cast<QSplitter *>(vboxlayout->itemAt(y)->widget());
     }
@@ -90,8 +91,6 @@ void ChartsWidget::addGraph(GPU *gpu, int xAxisTicks, int yAxisTicks, unsigned l
     this->graphcount++;
 
     int layoutheight = (static_cast<QWidget *>(this->parent()))->geometry().height();
-
-// splitter->setFixedHeight(layoutheight/graphcount);
 
     for (int i = 0; i < c; i++) {
         if (i % 2 == 0)

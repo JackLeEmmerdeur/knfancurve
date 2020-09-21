@@ -5,12 +5,12 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-// const QString DRIVER("QSQLITE");
+    // const QString DRIVER("QSQLITE");
 
-// if (!QSqlDatabase::isDriverAvailable(DRIVER)) {
-// QutieHelpers::msgbox(tr("Error"), tr("SQLiteDriver missing"));
-// QTimer::singleShot(1000, this, SLOT(quit()));
-// } else {
+    // if (!QSqlDatabase::isDriverAvailable(DRIVER)) {
+    // QutieHelpers::msgbox(tr("Error"), tr("SQLiteDriver missing"));
+    // QTimer::singleShot(1000, this, SLOT(quit()));
+    // } else {
     ui->setupUi(this);
 
     this->nvidiaSMI = new SMI();

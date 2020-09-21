@@ -10,6 +10,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     QTranslator translator;
 
+
     if (translator.load(":/translations/nfancurvytr_en", ":/") == false) {
         QMessageBox msg;
         msg.setText("nono");

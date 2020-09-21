@@ -71,6 +71,7 @@ public slots:
 
 private:
     int xAxisTicks, yAxisTicks;
+    int splittercount = 0;
     bool graphDataShown = false;
     Ui::ChartWrapper *ui;
     QSplitter *splitter;

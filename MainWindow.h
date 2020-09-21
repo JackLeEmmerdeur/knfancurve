@@ -14,7 +14,7 @@
 #include <QByteArray>
 #include <QString>
 #include <QStringList>
-#include <QSqlDatabase>
+//#include <QSqlDatabase>
 #include <QApplication>
 #include <QTextCodec>
 #include <QCloseEvent>
