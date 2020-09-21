@@ -17,8 +17,6 @@ If you got QtCreator development already set up you can spare yourself the below
 
 Included is a dockerfile that builds a moderate sized (about 1gig) debian:buster-slim image with just the base cmake and Qt5 build environment. 
 
-I'm Planning to implement a composer-file for the next steps but for now this is what I use:
-
 #### Step 1
 
 ##### 1.1 Change to the cloned project folder
@@ -58,9 +56,9 @@ Inside the your cloned project dir run
 
 This will:
 * pull the docker-image debian:buster-slim 
-* qt5 and qt5-libaries will be installed
-* cmake-build-system will be installed
-* the binary will be build in `linuxbuild`
+* install qt5 and qt5-libaries
+* install gcc and cmake-build-system 
+* build the knfancurve binary in `linuxbuild`
 
 Everytime you want to build in future just call `docker-compose up` and have a fresh build in 5 seconds!
  
