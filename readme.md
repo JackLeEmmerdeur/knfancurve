@@ -5,7 +5,6 @@ Initially meant to be a GUI-frontend [nan0s7/nfancurve](https://github.com/nan0s
 The graph part is nearly done and I plan to tackle the fan-control part either by executing the logic of the shell script with Qt process-calls in a long running thread OR just executing the original shell-script, which would probably be faster.
 
 Visit the [github page](https://jackleemmerdeur.github.io/knfancurve/) for additional info.
-![Tab1](https://imgur.com/COiQSy3)
 
 <br>
 
