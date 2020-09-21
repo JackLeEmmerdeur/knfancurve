@@ -19,8 +19,6 @@ Included is a dockerfile that builds a moderate sized (about 1gig) debian:buster
 
 I'm Planning to implement a composer-file for the next steps but for now this is what I use:
 
-<br>
-
 #### Step 1
 
 ##### 1.1 Change to the cloned project folder
