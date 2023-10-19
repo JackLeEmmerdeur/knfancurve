@@ -2,7 +2,7 @@
 
 Visit the [github page](https://jackleemmerdeur.github.io/knfancurve/) for additional info.
 
-#### <em>This is a dev-version and only really useful as a base for further development</em>
+#### <em>⚠️ This is a dev-version and only really useful as a base for further development</em>
 
 Initially meant to be a GUI-frontend [nan0s7/nfancurve](https://github.com/nan0s7/nfancurve), a fan-control shellscript for nvidia cards. That part is by now not implemented as I drifted off to monitoring with graphs and showing basic data about installed cards. I'm using nvidia-smi for that, like nan0s7 does.
 
